@@ -1,7 +1,7 @@
 #ifndef GAMEINPUTACTION_H
 #define GAMEINPUTACTION_H
 
-enum InputAction {
+enum EInputAction {
     Left,
     Right,
     Up,
@@ -10,7 +10,7 @@ enum InputAction {
     ACTION_COUNT
 };
 
-enum InputAxis
+enum EInputAxis
 {
     X,
     Y

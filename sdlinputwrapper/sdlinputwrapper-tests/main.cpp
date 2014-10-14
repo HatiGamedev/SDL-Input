@@ -11,22 +11,22 @@
 TEST(InputDevice, isPressed)
 {
     sdli::InputDevice device;
-    device.map(SDL_SCANCODE_W, InputAction::Up);
-    ASSERT_EQ(false, device.isPressed(InputAction::Up));
+    device.map(SDL_SCANCODE_W, EInputAction::Up);
+    ASSERT_EQ(false, device.isPressed(EInputAction::Up));
 
     device.push(sdli::InputType::Keyboard, SDL_SCANCODE_W, 1);
     device.dispatch();
-    ASSERT_EQ(true, device.isPressed(InputAction::Up));
+    ASSERT_EQ(true, device.isPressed(EInputAction::Up));
 }
 
 TEST(InputDevice, Unmapped)
 {
     sdli::InputDevice device;
-    ASSERT_EQ(false, device.isPressed(InputAction::Down));
-    ASSERT_EQ(false, device.isDown(InputAction::Down));
+    ASSERT_EQ(false, device.isPressed(EInputAction::Down));
+    ASSERT_EQ(false, device.isDown(EInputAction::Down));
 
-    ASSERT_EQ(true, device.isReleased(InputAction::Down));
-    ASSERT_EQ(true, device.isReleased(InputAction::Down));
+    ASSERT_EQ(true, device.isReleased(EInputAction::Down));
+    ASSERT_EQ(true, device.isReleased(EInputAction::Down));
 }
 
 
