@@ -10,18 +10,18 @@
 
 TEST(InputDevice, isPressed)
 {
-    InputDevice device;
+    sdli::InputDevice device;
     device.map(SDL_SCANCODE_W, InputAction::Up);
     ASSERT_EQ(false, device.isPressed(InputAction::Up));
 
-    device.push(InputType::Keyboard, SDL_SCANCODE_W, 1);
+    device.push(sdli::InputType::Keyboard, SDL_SCANCODE_W, 1);
     device.dispatch();
     ASSERT_EQ(true, device.isPressed(InputAction::Up));
 }
 
 TEST(InputDevice, Unmapped)
 {
-    InputDevice device;
+    sdli::InputDevice device;
     ASSERT_EQ(false, device.isPressed(InputAction::Down));
 }
 
@@ -30,9 +30,6 @@ int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
     ::testing::AddGlobalTestEnvironment(new SDL_TestEnviroment);
-
-//    InputDevice device;
-//    device.map(SDL_SCANCODE_W, InputAction::Up);
 
     return RUN_ALL_TESTS();
 }

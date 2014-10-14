@@ -1,5 +1,7 @@
 #include "inputdevice.h"
 
+namespace sdli {
+
 InputDevice::InputDevice()
 {
 }
@@ -18,19 +20,21 @@ void InputDevice::dispatch()
         case InputType::Keyboard:
             logicDigitalData[keyboardKeys[static_cast<SDL_Scancode>(d.rawInput)]].currentStatus = d.pollResult;
             break;
-        case InputType::MouseButton:
-            // TBA - Req for public ?
-            break;
+
         case InputType::GamecontrollerButton:
             logicDigitalData[gameControllerButtons[static_cast<SDL_GameControllerButton>(d.rawInput)]].currentStatus = d.pollResult;
             break;
-        case InputType::MouseAxis:
-            // TBA - Req for public ?
-            break;
+
         case InputType::GamecontrollerAxis:
             logicAnalogData[gameControllerAxes[static_cast<SDL_GameControllerAxis>(d.rawInput)].axis].currentStatus = static_cast<float>(d.pollResult);
             // / gameControllerAxes[static_cast<SDL_GameControllerAxis>(d.rawInput)].normalizeValue;
             break;
+//        case InputType::MouseButton:
+//            // TBA - Req for public ?
+//            break;
+//        case InputType::MouseAxis:
+//            // TBA - Req for public ?
+//            break;
         }
     }
 
@@ -80,4 +84,6 @@ void InputDevice::map(SDL_GameControllerButton raw, InputAction a)
 void InputDevice::map(SDL_GameControllerAxis raw, InputAxis a, float normalize)
 {
     gameControllerAxes.emplace(std::make_pair(raw, InputAxisMapping{a, normalize}));
+}
+
 }
