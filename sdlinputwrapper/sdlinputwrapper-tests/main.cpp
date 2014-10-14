@@ -3,7 +3,7 @@
 
 #include "../sdlinputwrapper.h"
 #include "sdl_testenviroment.h"
-
+#include "inputaction.h"
 
 //GTEST_ASSERT_EQ(false, device.isPressed(InputAction::Up));
 
@@ -23,6 +23,10 @@ TEST(InputDevice, Unmapped)
 {
     sdli::InputDevice device;
     ASSERT_EQ(false, device.isPressed(InputAction::Down));
+    ASSERT_EQ(false, device.isDown(InputAction::Down));
+
+    ASSERT_EQ(true, device.isReleased(InputAction::Down));
+    ASSERT_EQ(true, device.isReleased(InputAction::Down));
 }
 
 
@@ -30,6 +34,8 @@ int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
     ::testing::AddGlobalTestEnvironment(new SDL_TestEnviroment);
+
+
 
     return RUN_ALL_TESTS();
 }

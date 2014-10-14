@@ -2,6 +2,11 @@
 
 namespace sdli {
 
+namespace {
+    const bool IS_RELEASED_UNDEFINED = true;
+    const bool IS_PRESSED_UNDEFINED = false;
+}
+
 InputDevice::InputDevice()
 {
 }
@@ -53,7 +58,7 @@ bool InputDevice::isPressed(InputAction action)
 {
     if(logicDigitalData.find(action) == logicDigitalData.end())
     {
-        return false;
+        return IS_PRESSED_UNDEFINED;
     }
 
     return logicDigitalData[action].currentStatus == 1
@@ -64,11 +69,31 @@ bool InputDevice::isReleased(InputAction action)
 {
     if(logicDigitalData.find(action) == logicDigitalData.end())
     {
-        return false;
+        return IS_RELEASED_UNDEFINED;
     }
 
     return logicDigitalData[action].currentStatus == 0
             && logicDigitalData[action].previousStatus != logicDigitalData[action].currentStatus;;
+}
+
+bool InputDevice::isDown(InputAction action)
+{
+    if(logicDigitalData.find(action) == logicDigitalData.end())
+    {
+        return IS_PRESSED_UNDEFINED;
+    }
+
+    return logicDigitalData[action].currentStatus == 1;
+}
+
+bool InputDevice::isUp(InputAction action)
+{
+    if(logicDigitalData.find(action) == logicDigitalData.end())
+    {
+        return IS_RELEASED_UNDEFINED;
+    }
+
+    return logicDigitalData[action].currentStatus == 0;
 }
 
 void InputDevice::map(SDL_Scancode raw, InputAction a)

@@ -1,13 +1,17 @@
 #ifndef INPUTDEVICE_H
 #define INPUTDEVICE_H
 
-#include "inputaction.h"
 #include <SDL2/SDL_keyboard.h>
 #include <SDL2/SDL_scancode.h>
 #include <SDL2/SDL_gamecontroller.h>
 #include <map>
 #include <vector>
 
+
+namespace sdli {
+using InputAction = unsigned int;
+using InputAxis = unsigned int;
+} // sdli
 
 namespace sdli {
 
@@ -69,6 +73,8 @@ public:
     float getRange(InputAxis axis);
     bool isPressed(InputAction action);
     bool isReleased(InputAction action);
+    bool isDown(InputAction action);
+    bool isUp(InputAction action);
 
     void map(SDL_Scancode raw, InputAction a);
     void map(SDL_GameControllerButton raw, InputAction a);
