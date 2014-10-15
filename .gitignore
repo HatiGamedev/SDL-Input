@@ -3,3 +3,6 @@
 *-build
 *.user
 build-*
+
+# CLion EAP
+.idea

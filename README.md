@@ -9,4 +9,11 @@ Goals of the library:
 * Multiplayer input handling in mind
 * Extensible interfaces
 
+
+Compiler support:
+* Clang
+* C++11 compatible gcc (untested)
+* MinGW-w64 (untested)
+
+
 Future library support may be added if concepts are not broken by it.
