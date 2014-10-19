@@ -21,6 +21,7 @@ void InputDevice::push(InputType type, int rawInput, int value)
     perFrameCaptures.emplace_back(RawInputData{type, rawInput, value});
 }
 
+//TODO: evaluate isPressed correctly - detect changes over multiple samples
 void InputDevice::dispatch()
 {
     for(auto& d : perFrameCaptures)
