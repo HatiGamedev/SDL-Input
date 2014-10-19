@@ -15,6 +15,7 @@ INCLUDE_DIRECTORIES(
 
 
 add_subdirectory(sdlinputwrapper-tests)
+add_subdirectory(samples)
 
 
 #add_executable(${PROJECT_NAME} ${SDLINPUTWRAPPER_LIB_SRC_LIST})

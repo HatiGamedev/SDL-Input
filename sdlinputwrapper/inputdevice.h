@@ -66,7 +66,7 @@ protected:
 public:
     InputDevice();
 
-
+    void poll();
     void push(InputType type, int rawInput, int value);
     void dispatch();
 
@@ -76,9 +76,9 @@ public:
     bool isDown(InputAction action);
     bool isUp(InputAction action);
 
-    void map(SDL_Scancode raw, InputAction a);
-    void map(SDL_GameControllerButton raw, InputAction a);
-    void map(SDL_GameControllerAxis raw, InputAxis a, float normalize);
+    void mapDigital(SDL_Scancode raw, InputAction a);
+    void mapDigital(SDL_GameControllerButton raw, InputAction a);
+    void mapRange(SDL_GameControllerAxis raw, InputAxis a, float normalize);
 };
 } // sdli
 

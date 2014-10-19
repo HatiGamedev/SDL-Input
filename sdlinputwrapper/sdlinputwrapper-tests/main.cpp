@@ -11,7 +11,7 @@
 TEST(InputDevice, isPressed)
 {
     sdli::InputDevice device;
-    device.map(SDL_SCANCODE_W, EInputAction::Up);
+    device.mapDigital(SDL_SCANCODE_W, EInputAction::Up);
     ASSERT_EQ(false, device.isPressed(EInputAction::Up));
 
     device.push(sdli::InputType::Keyboard, SDL_SCANCODE_W, 1);
@@ -30,10 +30,12 @@ TEST(InputDevice, Unmapped)
 }
 
 
+
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
     ::testing::AddGlobalTestEnvironment(new SDL_TestEnviroment);
+
 
 
 

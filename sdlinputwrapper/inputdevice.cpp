@@ -11,6 +11,11 @@ InputDevice::InputDevice()
 {
 }
 
+void InputDevice::poll()
+{
+
+}
+
 void InputDevice::push(InputType type, int rawInput, int value)
 {
     perFrameCaptures.emplace_back(RawInputData{type, rawInput, value});
@@ -96,17 +101,17 @@ bool InputDevice::isUp(InputAction action)
     return logicDigitalData[action].currentStatus == 0;
 }
 
-void InputDevice::map(SDL_Scancode raw, InputAction a)
+void InputDevice::mapDigital(SDL_Scancode raw, InputAction a)
 {
     keyboardKeys.emplace(std::make_pair(raw, a));
 }
 
-void InputDevice::map(SDL_GameControllerButton raw, InputAction a)
+void InputDevice::mapDigital(SDL_GameControllerButton raw, InputAction a)
 {
     gameControllerButtons.emplace(std::make_pair(raw, a));
 }
 
-void InputDevice::map(SDL_GameControllerAxis raw, InputAxis a, float normalize)
+void InputDevice::mapRange(SDL_GameControllerAxis raw, InputAxis a, float normalize)
 {
     gameControllerAxes.emplace(std::make_pair(raw, InputAxisMapping{a, normalize}));
 }
