@@ -13,6 +13,14 @@ InputDevice::InputDevice()
 
 void InputDevice::poll()
 {
+    auto sdl_keystate = SDL_GetKeyboardState(NULL);
+    for(auto& i : keyboardKeys)
+    {
+        auto state = sdl_keystate[i.first];
+        logicDigitalData[i.second].previousStatus = logicDigitalData[i.second].currentStatus;
+        logicDigitalData[i.second].currentStatus = state;
+    }
+
 
 }
 
@@ -24,16 +32,22 @@ void InputDevice::push(InputType type, int rawInput, int value)
 //TODO: evaluate isPressed correctly - detect changes over multiple samples
 void InputDevice::dispatch()
 {
+    for(auto& i : logicDigitalData)
+    {
+        i.second.previousStatus = i.second.currentStatus;
+        i.second.currentStatus = false;
+    }
+
     for(auto& d : perFrameCaptures)
     {
         switch(d.type)
         {
         case InputType::Keyboard:
-            logicDigitalData[keyboardKeys[static_cast<SDL_Scancode>(d.rawInput)]].currentStatus = d.pollResult;
+            logicDigitalData[keyboardKeys[static_cast<SDL_Scancode>(d.rawInput)]].currentStatus |= d.pollResult;
             break;
 
         case InputType::GamecontrollerButton:
-            logicDigitalData[gameControllerButtons[static_cast<SDL_GameControllerButton>(d.rawInput)]].currentStatus = d.pollResult;
+            logicDigitalData[gameControllerButtons[static_cast<SDL_GameControllerButton>(d.rawInput)]].currentStatus |= d.pollResult;
             break;
 
         case InputType::GamecontrollerAxis:
@@ -67,7 +81,7 @@ bool InputDevice::isPressed(InputAction action)
         return IS_PRESSED_UNDEFINED;
     }
 
-    return logicDigitalData[action].currentStatus == 1
+    return logicDigitalData[action].currentStatus
             && logicDigitalData[action].previousStatus != logicDigitalData[action].currentStatus;
 }
 
@@ -78,7 +92,7 @@ bool InputDevice::isReleased(InputAction action)
         return IS_RELEASED_UNDEFINED;
     }
 
-    return logicDigitalData[action].currentStatus == 0
+    return !logicDigitalData[action].currentStatus
             && logicDigitalData[action].previousStatus != logicDigitalData[action].currentStatus;;
 }
 
@@ -89,7 +103,7 @@ bool InputDevice::isDown(InputAction action)
         return IS_PRESSED_UNDEFINED;
     }
 
-    return logicDigitalData[action].currentStatus == 1;
+    return logicDigitalData[action].currentStatus;
 }
 
 bool InputDevice::isUp(InputAction action)
@@ -99,7 +113,7 @@ bool InputDevice::isUp(InputAction action)
         return IS_RELEASED_UNDEFINED;
     }
 
-    return logicDigitalData[action].currentStatus == 0;
+    return logicDigitalData[action].currentStatus;
 }
 
 void InputDevice::mapDigital(SDL_Scancode raw, InputAction a)

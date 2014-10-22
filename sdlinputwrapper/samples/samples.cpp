@@ -34,6 +34,7 @@ int main(int argc, char** argv)
 
 
     SDL_Event event;
+    int iLock = 4;
     while(!sampleQuit)
     {
         while(SDL_PollEvent(&event))
@@ -50,12 +51,19 @@ int main(int argc, char** argv)
             }
 
         }
+        device.poll();
 
-        device.dispatch();
-        if(device.isUp(SampleInputActions::SampleDown))
+//        device.dispatch();
+        if(iLock>=4)
         {
-            std::cout << "SampleInputActions::SampleDown " << "pressed" << std::endl;
+            if(device.isPressed(SampleInputActions::SampleDown))
+            {
+                std::cout << "SampleInputActions::SampleDown " << "pressed" << std::endl;
+            }
+            iLock = 0;
         }
+
+        ++iLock;
 
 
 
