@@ -15,6 +15,7 @@ Compiler support:
 * MinGW-w64 (untested)
 
 Conceptual (move to wiki later):
+* Processor: represent an interface used by your game engine to get devices and create new contexts. Also handles sdl events. (You can use callbacks to add new functionality to events)
 * InputDevice: represents a single input device (controller/gamepad, mouse+keyboard)
 * InputContext: represents a contextual mapping of a input device
 * A device requires an active context (default is no context - as no mapping)

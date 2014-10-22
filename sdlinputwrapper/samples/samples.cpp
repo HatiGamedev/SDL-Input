@@ -24,6 +24,7 @@ void sdlKeyEvent(const SDL_Event& e, sdli::InputDevice& device)
 
 int main(int argc, char** argv)
 {
+
     auto sdl_init_status = SDL_Init(SDL_INIT_EVENTS
                                      | SDL_INIT_JOYSTICK
                                      | SDL_INIT_GAMECONTROLLER);
