@@ -14,8 +14,8 @@ const InputAction INVALID_INPUT_AXIS = -1;
 
 enum class CallType
 {
-    Down,
-    Up,
+    isDown,
+    isUp,
     OnRelease,
     OnPress,
     Analog_GT,

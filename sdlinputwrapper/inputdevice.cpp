@@ -15,9 +15,14 @@ bool isPressed(const LogicDigitalData& d)
             && d.previousStatus != d.currentStatus;
 }
 
+bool isReleased(const LogicDigitalData& d)
+{
+    return !d.currentStatus
+            && d.previousStatus != d.currentStatus;
+}
+
 void InputDevice::handleKeyboard(const InputDevice::RawInputData& raw)
 {
-
     auto& ctx = this->contextStack_.top();
 
     auto inputAction = ctx->keyAction(static_cast<SDL_Scancode>(raw.rawInput));
@@ -29,6 +34,12 @@ void InputDevice::handleKeyboard(const InputDevice::RawInputData& raw)
     if(::sdli::isPressed(logic))
     {
         ctx->fireCallbacks(inputAction, sdli::CallType::OnPress);
+        return;
+    }
+    if(::sdli::isReleased(logic))
+    {
+        ctx->fireCallbacks(inputAction, sdli::CallType::OnRelease);
+        return;
     }
 }
 

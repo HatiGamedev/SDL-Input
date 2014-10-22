@@ -43,7 +43,12 @@ int main(int argc, char** argv)
 
     ctx1->addCallback(SampleInputActions::SampleDown, sdli::CallType::OnPress, [=]()
     {
-        std::cout << "Hello world" << std::endl;
+        std::cout << "Hello";
+    });
+
+    ctx1->addCallback(SampleInputActions::SampleDown, sdli::CallType::OnRelease, []()
+    {
+        std::cout << " World" << std::endl;
     });
 
     SDL_Window* w = SDL_CreateWindow("SampleWindow", 0, 0, 256, 256, SDL_WindowFlags::SDL_WINDOW_SHOWN|SDL_WindowFlags::SDL_WINDOW_OPENGL);
@@ -74,7 +79,7 @@ int main(int argc, char** argv)
         device.dispatch();
         if(device.isPressed(SampleInputActions::SampleDown))
         {
-            std::cout << "SampleInputActions::SampleDown " << "pressed" << std::endl;
+//            std::cout << "SampleInputActions::SampleDown " << "pressed" << std::endl;
         }
 
         SDL_GL_SwapWindow(w);
