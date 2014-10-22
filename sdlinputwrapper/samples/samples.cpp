@@ -36,8 +36,11 @@ int main(int argc, char** argv)
     bool sampleQuit = false;
     bool onUpdate = false;
 
-    auto ctx1 = std::unique_ptr<sdli::InputContext>(new sdli::InputContext(SampleContext::Menu));
-    auto ctx2 = std::unique_ptr<sdli::InputContext>(new sdli::InputContext(SampleContext::Game));
+    auto inputproc = std::unique_ptr<sdli::Processor>(new sdli::Processor);
+
+
+    auto ctx1 = inputproc->createContext(SampleContext::Menu);
+    auto ctx2 = inputproc->createContext(SampleContext::Game);
 
     ctx1->mapDigital(SDL_SCANCODE_S, SampleInputActions::SampleDown);
     ctx2->mapDigital(SDL_SCANCODE_S, SampleInputActions::Shoot);
@@ -56,7 +59,7 @@ int main(int argc, char** argv)
 
     auto sdl_glContext = SDL_GL_CreateContext(w);
 
-    device.pushContext(ctx1.get());
+    device.pushContext(ctx1);
 
     SDL_Event event;
     while(!sampleQuit)
@@ -68,11 +71,12 @@ int main(int argc, char** argv)
             case SDL_QUIT:
                 sampleQuit = true;
                 break;
-            case SDL_KEYDOWN:
-            case SDL_KEYUP:
-                sdlKeyEvent(event, device);
-                break;
+//            case SDL_KEYDOWN:
+//            case SDL_KEYUP:
+//                sdlKeyEvent(event, device);
+//                break;
             }
+            inputproc->handleSdlEvents(event);
 
         }
         device.poll();

@@ -41,6 +41,7 @@ enum class InputType
 };
 
 // Forward declarations
+class Processor;
 class InputContext;
 class InputDevice;
 
