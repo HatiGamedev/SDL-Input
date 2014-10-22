@@ -3,10 +3,12 @@
 #include <cassert>
 
 #include <sdlinputwrapper/sdlinputwrapper.h>
+#include <memory>
 
 enum SampleInputActions
 {
-    SampleDown
+    SampleDown,
+    Shoot
 };
 
 enum SampleContext
@@ -33,12 +35,22 @@ int main(int argc, char** argv)
     bool sampleQuit = false;
     bool onUpdate = false;
 
-    auto ctx1 = new sdli::InputContext(SampleContext::Menu);
+    auto ctx1 = std::unique_ptr<sdli::InputContext>(new sdli::InputContext(SampleContext::Menu));
+    auto ctx2 = std::unique_ptr<sdli::InputContext>(new sdli::InputContext(SampleContext::Game));
 
-    device.mapDigital(SDL_SCANCODE_S, SampleInputActions::SampleDown);
+    ctx1->mapDigital(SDL_SCANCODE_S, SampleInputActions::SampleDown);
+    ctx2->mapDigital(SDL_SCANCODE_S, SampleInputActions::Shoot);
+
+    ctx1->addCallback(SampleInputActions::SampleDown, sdli::CallType::OnPress, [=]()
+    {
+        std::cout << "Hello world" << std::endl;
+    });
 
     SDL_Window* w = SDL_CreateWindow("SampleWindow", 0, 0, 256, 256, SDL_WindowFlags::SDL_WINDOW_SHOWN|SDL_WindowFlags::SDL_WINDOW_OPENGL);
 
+    auto sdl_glContext = SDL_GL_CreateContext(w);
+
+    device.pushContext(ctx1.get());
 
     SDL_Event event;
     while(!sampleQuit)
@@ -59,7 +71,7 @@ int main(int argc, char** argv)
         }
         device.poll();
 
-//        device.dispatch();
+        device.dispatch();
         if(device.isPressed(SampleInputActions::SampleDown))
         {
             std::cout << "SampleInputActions::SampleDown " << "pressed" << std::endl;
@@ -68,6 +80,7 @@ int main(int argc, char** argv)
         SDL_GL_SwapWindow(w);
     }
 
-
+    SDL_GL_DeleteContext(sdl_glContext);
+    SDL_DestroyWindow(w);
     return 0;
 }

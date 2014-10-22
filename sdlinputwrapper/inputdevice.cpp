@@ -1,10 +1,35 @@
 #include "inputdevice.h"
-
+#include "inputcontext.h"
+namespace {
+    const bool IS_DOWN_UNDEFINED = false;
+    const bool IS_UP_UNDEFINED = true;
+    const bool IS_RELEASED_UNDEFINED = false;
+    const bool IS_PRESSED_UNDEFINED = false;
+    const float RANGE_UNDEFINED = 0.0f;
+}
 namespace sdli {
 
-namespace {
-    const bool IS_RELEASED_UNDEFINED = true;
-    const bool IS_PRESSED_UNDEFINED = false;
+bool isPressed(const LogicDigitalData& d)
+{
+    return d.currentStatus
+            && d.previousStatus != d.currentStatus;
+}
+
+void InputDevice::handleKeyboard(const InputDevice::RawInputData& raw)
+{
+
+    auto& ctx = this->contextStack_.top();
+
+    auto inputAction = ctx->keyAction(static_cast<SDL_Scancode>(raw.rawInput));
+    auto& logic = logicDigitalData[inputAction];
+
+    logic.previousStatus = logic.currentStatus;
+    logic.currentStatus = raw.pollResult;
+
+    if(::sdli::isPressed(logic))
+    {
+        ctx->fireCallbacks(inputAction, sdli::CallType::OnPress);
+    }
 }
 
 InputDevice::InputDevice()
@@ -13,18 +38,24 @@ InputDevice::InputDevice()
 
 void InputDevice::poll()
 {
-    auto sdl_keystate = SDL_GetKeyboardState(NULL);
-    for(auto& i : keyboardKeys)
+    if(this->contextStack_.empty())
     {
-        auto state = sdl_keystate[i.first];
-        logicDigitalData[i.second].previousStatus = logicDigitalData[i.second].currentStatus;
-        logicDigitalData[i.second].currentStatus = state;
+        return;
     }
+
+
+    auto sdl_keystate = SDL_GetKeyboardState(NULL);
+//    for(auto& i : keyboardKeys)
+//    {
+//        auto state = sdl_keystate[i.first];
+//        logicDigitalData[i.second].previousStatus = logicDigitalData[i.second].currentStatus;
+//        logicDigitalData[i.second].currentStatus = state;
+//    }
 
 
 }
 
-void InputDevice::push(InputType type, int rawInput, int value)
+void InputDevice::push(InputType type, unsigned int rawInput, int value)
 {
     perFrameCaptures.emplace_back(RawInputData{type, rawInput, value});
 }
@@ -32,6 +63,11 @@ void InputDevice::push(InputType type, int rawInput, int value)
 //TODO: evaluate isPressed correctly - detect changes over multiple samples
 void InputDevice::dispatch()
 {
+    if(this->contextStack_.empty())
+    {
+        return;
+    }
+
     for(auto& i : logicDigitalData)
     {
         i.second.previousStatus = i.second.currentStatus;
@@ -43,17 +79,20 @@ void InputDevice::dispatch()
         switch(d.type)
         {
         case InputType::Keyboard:
-            logicDigitalData[keyboardKeys[static_cast<SDL_Scancode>(d.rawInput)]].currentStatus |= d.pollResult;
+            handleKeyboard(d);
             break;
+//        case InputType::Keyboard:
+//            logicDigitalData[keyboardKeys[static_cast<SDL_Scancode>(d.rawInput)]].currentStatus |= d.pollResult;
+//            break;
 
-        case InputType::GamecontrollerButton:
-            logicDigitalData[gameControllerButtons[static_cast<SDL_GameControllerButton>(d.rawInput)]].currentStatus |= d.pollResult;
-            break;
+//        case InputType::GamecontrollerButton:
+//            logicDigitalData[gameControllerButtons[static_cast<SDL_GameControllerButton>(d.rawInput)]].currentStatus |= d.pollResult;
+//            break;
 
-        case InputType::GamecontrollerAxis:
-            logicAnalogData[gameControllerAxes[static_cast<SDL_GameControllerAxis>(d.rawInput)].axis].currentStatus = static_cast<float>(d.pollResult);
-            // / gameControllerAxes[static_cast<SDL_GameControllerAxis>(d.rawInput)].normalizeValue;
-            break;
+//        case InputType::GamecontrollerAxis:
+//            logicAnalogData[gameControllerAxes[static_cast<SDL_GameControllerAxis>(d.rawInput)].axis].currentStatus = static_cast<float>(d.pollResult);
+//            // / gameControllerAxes[static_cast<SDL_GameControllerAxis>(d.rawInput)].normalizeValue;
+//            break;
 //        case InputType::MouseButton:
 //            // TBA - Req for public ?
 //            break;
@@ -68,17 +107,21 @@ void InputDevice::dispatch()
 
 float InputDevice::getRange(InputAxis axis)
 {
-    if(logicAnalogData.find(axis) == logicAnalogData.end())
-        return 0.0f;
+    if(contextStack_.empty()
+            || logicAnalogData.find(axis) == logicAnalogData.end())
+    {
+        return RANGE_UNDEFINED;
+    }
 
     return logicAnalogData[axis].currentStatus;
 }
 
 bool InputDevice::isPressed(InputAction action)
 {
-    if(logicDigitalData.find(action) == logicDigitalData.end())
+    if(contextStack_.empty()
+            || logicDigitalData.find(action) == logicDigitalData.end())
     {
-        return IS_PRESSED_UNDEFINED;
+        return ::IS_PRESSED_UNDEFINED;
     }
 
     return logicDigitalData[action].currentStatus
@@ -87,9 +130,9 @@ bool InputDevice::isPressed(InputAction action)
 
 bool InputDevice::isReleased(InputAction action)
 {
-    if(logicDigitalData.find(action) == logicDigitalData.end())
+    if(contextStack_.empty() || logicDigitalData.find(action) == logicDigitalData.end())
     {
-        return IS_RELEASED_UNDEFINED;
+        return ::IS_RELEASED_UNDEFINED;
     }
 
     return !logicDigitalData[action].currentStatus
@@ -98,37 +141,27 @@ bool InputDevice::isReleased(InputAction action)
 
 bool InputDevice::isDown(InputAction action)
 {
-    if(logicDigitalData.find(action) == logicDigitalData.end())
+    if(contextStack_.empty() || logicDigitalData.find(action) == logicDigitalData.end())
     {
-        return IS_PRESSED_UNDEFINED;
+        return ::IS_DOWN_UNDEFINED;
     }
-
+    std::function<void()> test;
     return logicDigitalData[action].currentStatus;
 }
 
 bool InputDevice::isUp(InputAction action)
 {
-    if(logicDigitalData.find(action) == logicDigitalData.end())
+    if(contextStack_.empty() || logicDigitalData.find(action) == logicDigitalData.end())
     {
-        return IS_RELEASED_UNDEFINED;
+        return ::IS_UP_UNDEFINED;
     }
 
     return logicDigitalData[action].currentStatus;
 }
 
-void InputDevice::mapDigital(SDL_Scancode raw, InputAction a)
+void InputDevice::pushContext(InputContext* newContext)
 {
-    keyboardKeys.emplace(std::make_pair(raw, a));
-}
-
-void InputDevice::mapDigital(SDL_GameControllerButton raw, InputAction a)
-{
-    gameControllerButtons.emplace(std::make_pair(raw, a));
-}
-
-void InputDevice::mapRange(SDL_GameControllerAxis raw, InputAxis a, float normalize)
-{
-    gameControllerAxes.emplace(std::make_pair(raw, InputAxisMapping{a, normalize}));
+    contextStack_.push(newContext);
 }
 
 }

@@ -4,29 +4,28 @@
 #include "../sdlinputwrapper.h"
 #include "sdl_testenviroment.h"
 #include "inputaction.h"
-
+#include <memory>
 //GTEST_ASSERT_EQ(false, device.isPressed(InputAction::Up));
 
+enum EInputContext
+{
+    isPressedContext
+};
 
-TEST(InputDevice, isPressed)
+TEST(InputDevice, defaults)
 {
     sdli::InputDevice device;
-    device.mapDigital(SDL_SCANCODE_W, EInputAction::Up);
-    ASSERT_EQ(false, device.isPressed(EInputAction::Up));
+    std::unique_ptr<sdli::InputContext> ctx(new sdli::InputContext(EInputContext::isPressedContext));
 
-    device.push(sdli::InputType::Keyboard, SDL_SCANCODE_W, 1);
-    device.dispatch();
-    ASSERT_EQ(true, device.isPressed(EInputAction::Up));
 }
 
-TEST(InputDevice, Unmapped)
+TEST(InputDevice, UnmappedDefaults)
 {
     sdli::InputDevice device;
     ASSERT_EQ(false, device.isPressed(EInputAction::Down));
     ASSERT_EQ(false, device.isDown(EInputAction::Down));
-
-    ASSERT_EQ(true, device.isReleased(EInputAction::Down));
-    ASSERT_EQ(true, device.isReleased(EInputAction::Down));
+    ASSERT_EQ(false, device.isReleased(EInputAction::Down));
+    ASSERT_EQ(true, device.isUp(EInputAction::Down));
 }
 
 

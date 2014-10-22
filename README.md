@@ -14,8 +14,13 @@ Compiler support:
 * gcc (untested)
 * MinGW-w64 (untested)
 
-See samples/ for intended usage.
+Conceptual (move to wiki later):
+* InputDevice: represents a single input device (controller/gamepad, mouse+keyboard)
+* InputContext: represents a contextual mapping of a input device
+* A device requires an active context (default is no context - as no mapping)
+* It is highly advised to use enum or enum class as arguments for InputAction, InputAxis, ContextId
 
+See samples for intended usage.
 
 If you find anything lacking tickets and contribution are welcome.
 

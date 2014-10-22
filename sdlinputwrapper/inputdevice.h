@@ -8,18 +8,10 @@
 #include <vector>
 
 #include "sdli_definitions.h"
+#include <stack>
+#include <functional>
 
 namespace sdli {
-
-
-enum class InputType
-{
-    Keyboard,
-//    MouseAxis,
-//    MouseButton,
-    GamecontrollerButton,
-    GamecontrollerAxis
-};
 
 class InputDevice
 {
@@ -27,7 +19,7 @@ private:
     struct RawInputData
     {
         InputType type;
-        int rawInput;
+        unsigned int rawInput;
         int pollResult;
     };
 
@@ -35,25 +27,18 @@ private:
 
     std::map<InputAction, LogicDigitalData> logicDigitalData;
     std::map<InputAxis, LogicAnalogData> logicAnalogData;
+
+
 protected:
+    std::stack<sdli::InputContext*> contextStack_;
 
-
-    struct InputAxisMapping
-    {
-        InputAxis axis;
-        float normalizeValue;
-    };
-
-    std::map<SDL_Scancode, InputAction> keyboardKeys;
-
-    std::map<SDL_GameControllerButton, InputAction> gameControllerButtons;
-    std::map<SDL_GameControllerAxis, InputAxisMapping> gameControllerAxes;
+    void handleKeyboard(const RawInputData&raw);
 
 public:
     InputDevice();
 
     void poll();
-    void push(InputType type, int rawInput, int value);
+    void push(InputType type, unsigned int rawInput, int value);
     void dispatch();
 
     float getRange(InputAxis axis);
@@ -62,9 +47,9 @@ public:
     bool isDown(InputAction action);
     bool isUp(InputAction action);
 
-    void mapDigital(SDL_Scancode raw, InputAction a);
-    void mapDigital(SDL_GameControllerButton raw, InputAction a);
-    void mapRange(SDL_GameControllerAxis raw, InputAxis a, float normalize);
+    void pushContext(sdli::InputContext* newContext);
+    sdli::InputContext* popContext();
+
 };
 
 } // sdli
