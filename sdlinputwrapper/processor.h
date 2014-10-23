@@ -13,10 +13,16 @@ namespace sdli {
 class Processor
 {
     std::map<sdli::ContextId, std::unique_ptr<sdli::InputContext>> contextMap;
+
+    std::unique_ptr<sdli::InputDevice> keyboard;
+
 public:
     Processor();
 
     sdli::InputContext* createContext(const sdli::ContextId& contextId);
+    sdli::InputDevice* getDevice(sdli::InputType type);
+
+
 
     void handleSdlEvents(const SDL_Event& e);
 

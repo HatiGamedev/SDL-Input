@@ -1,11 +1,13 @@
 #include "processor.h"
 #include <assert.h>
 #include "inputcontext.h"
+#include "inputdevice.h"
 
 namespace sdli
 {
 
 Processor::Processor()
+    : keyboard(new sdli::InputDevice)
 {
 }
 
@@ -18,6 +20,20 @@ sdli::InputContext* Processor::createContext(const sdli::ContextId& contextId)
     contextMap.emplace(std::make_pair(contextId, std::unique_ptr<sdli::InputContext>(new sdli::InputContext(contextId))));
 
     return contextMap[contextId].get();
+}
+
+InputDevice* Processor::getDevice(InputType type)
+{
+    switch(type)
+    {
+    case sdli::InputType::Keyboard:
+        return this->keyboard.get();
+        break;
+    case sdli::InputType::Gamecontroller:
+        assert(false);
+        return nullptr;
+        break;
+    }
 }
 
 void Processor::handleSdlEvents(const SDL_Event& e)
