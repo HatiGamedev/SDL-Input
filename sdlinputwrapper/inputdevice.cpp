@@ -28,7 +28,7 @@ void InputDevice::handleKeyboard(const InputDevice::RawInputData& raw)
     auto inputAction = ctx->keyAction(static_cast<SDL_Scancode>(raw.rawInput));
     auto& logic = logicDigitalData[inputAction];
 
-    logic.previousStatus = logic.currentStatus;
+//    logic.previousStatus = logic.currentStatus;
     logic.currentStatus = raw.pollResult;
 
     if(::sdli::isPressed(logic))
@@ -82,7 +82,6 @@ void InputDevice::dispatch()
     for(auto& i : logicDigitalData)
     {
         i.second.previousStatus = i.second.currentStatus;
-        i.second.currentStatus = false;
     }
 
     for(auto& d : perFrameCaptures)
