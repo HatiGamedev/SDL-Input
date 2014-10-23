@@ -42,7 +42,7 @@ void Processor::handleSdlEvents(const SDL_Event& e)
     {
     case SDL_KEYDOWN:
     case SDL_KEYUP:
-
+        keyboard->push(InputType::Keyboard, e.key.keysym.scancode, e.key.state);
         break;
     case SDL_CONTROLLERDEVICEADDED:
 

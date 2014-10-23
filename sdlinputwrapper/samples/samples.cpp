@@ -24,25 +24,24 @@ void sdlKeyEvent(const SDL_Event& e, sdli::InputDevice& device)
 
 int main(int argc, char** argv)
 {
+    std::setbuf(stdout, NULL); // used to always flush std::cout
 
     auto sdl_init_status = SDL_Init(SDL_INIT_EVENTS
                                      | SDL_INIT_JOYSTICK
                                      | SDL_INIT_GAMECONTROLLER);
     assert(sdl_init_status==0);
 
-    sdli::InputDevice device;
-
-
     bool sampleQuit = false;
-    bool onUpdate = false;
 
     auto inputproc = std::unique_ptr<sdli::Processor>(new sdli::Processor);
-
+    auto device = inputproc->getDevice(sdli::InputType::Keyboard);
 
     auto ctx1 = inputproc->createContext(SampleContext::Menu);
     auto ctx2 = inputproc->createContext(SampleContext::Game);
 
     ctx1->mapDigital(SDL_SCANCODE_S, SampleInputActions::SampleDown);
+//    ctx1->mapDigital(SDL_CONTROLLER_BUTTON_A, SampleInputActions::SampleDown);
+
     ctx2->mapDigital(SDL_SCANCODE_S, SampleInputActions::Shoot);
 
     ctx1->addCallback(SampleInputActions::SampleDown, sdli::CallType::OnPress, [=]()
@@ -59,7 +58,7 @@ int main(int argc, char** argv)
 
     auto sdl_glContext = SDL_GL_CreateContext(w);
 
-    device.pushContext(ctx1);
+    device->pushContext(ctx1);
 
     SDL_Event event;
     while(!sampleQuit)
@@ -79,10 +78,10 @@ int main(int argc, char** argv)
             inputproc->handleSdlEvents(event);
 
         }
-        device.poll();
+        device->poll();
 
-        device.dispatch();
-        if(device.isPressed(SampleInputActions::SampleDown))
+        device->dispatch();
+        if(device->isPressed(SampleInputActions::SampleDown))
         {
 //            std::cout << "SampleInputActions::SampleDown " << "pressed" << std::endl;
         }

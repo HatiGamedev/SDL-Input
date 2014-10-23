@@ -92,6 +92,8 @@ void InputDevice::dispatch()
         case InputType::Keyboard:
             handleKeyboard(d);
             break;
+        default:
+            break;
 //        case InputType::Keyboard:
 //            logicDigitalData[keyboardKeys[static_cast<SDL_Scancode>(d.rawInput)]].currentStatus |= d.pollResult;
 //            break;
