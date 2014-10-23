@@ -7,24 +7,10 @@
 #include <map>
 #include <vector>
 
-
-namespace sdli {
-using InputAction = unsigned int;
-using InputAxis = unsigned int;
-} // sdli
+#include "sdli_definitions.h"
 
 namespace sdli {
 
-struct LogicDigitalData
-{
-    bool currentStatus{false};
-    bool previousStatus{false};
-};
-
-struct LogicAnalogData
-{
-    float currentStatus{0.0f};
-};
 
 enum class InputType
 {
@@ -80,6 +66,7 @@ public:
     void mapDigital(SDL_GameControllerButton raw, InputAction a);
     void mapRange(SDL_GameControllerAxis raw, InputAxis a, float normalize);
 };
+
 } // sdli
 
 #endif // INPUTDEVICE_H
