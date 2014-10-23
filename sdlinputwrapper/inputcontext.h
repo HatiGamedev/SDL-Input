@@ -13,13 +13,23 @@ namespace sdli {
 
 class InputContext
 {
+    const sdli::ContextId contextId_;
+
     std::map<InputAction, LogicDigitalData> digitalData;
     std::map<InputAction, LogicAnalogData> anaogData;
 
 public:
-    InputContext();
+    InputContext(const sdli::ContextId& contextId);
+
+    InputContext(const InputContext&) =delete;
+    InputContext(InputContext&&) =delete;
+    InputContext& operator=(const InputContext&) =delete;
+    InputContext& operator=(InputContext&&) =delete;
+
 
     void poll();
+
+    sdli::ContextId id() const;
 
     void mapDigital(SDL_Scancode rawScancode, sdli::InputAction action);
     void mapDigital(SDL_GameControllerButton rawButton, sdli::InputAction action);

@@ -4,6 +4,7 @@
 namespace sdli {
 using InputAction = unsigned int;
 using InputAxis = unsigned int;
+using ContextId = unsigned int;
 
 struct LogicDigitalData
 {

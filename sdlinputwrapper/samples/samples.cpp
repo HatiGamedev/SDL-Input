@@ -9,9 +9,14 @@ enum SampleInputActions
     SampleDown
 };
 
+enum SampleContext
+{
+    Menu,
+    Game
+};
+
 void sdlKeyEvent(const SDL_Event& e, sdli::InputDevice& device)
 {
-    std::cout << static_cast<int>(e.key.state) << std::endl;
     device.push(sdli::InputType::Keyboard, e.key.keysym.scancode, e.key.state);
 }
 
@@ -28,9 +33,11 @@ int main(int argc, char** argv)
     bool sampleQuit = false;
     bool onUpdate = false;
 
+    auto ctx1 = new sdli::InputContext(SampleContext::Menu);
+
     device.mapDigital(SDL_SCANCODE_S, SampleInputActions::SampleDown);
 
-    SDL_Window* w = SDL_CreateWindow("SampleWindow", 0, 0, 256, 256, SDL_WindowFlags::SDL_WINDOW_SHOWN);
+    SDL_Window* w = SDL_CreateWindow("SampleWindow", 0, 0, 256, 256, SDL_WindowFlags::SDL_WINDOW_SHOWN|SDL_WindowFlags::SDL_WINDOW_OPENGL);
 
 
     SDL_Event event;
@@ -53,12 +60,12 @@ int main(int argc, char** argv)
         device.poll();
 
 //        device.dispatch();
-            if(device.isPressed(SampleInputActions::SampleDown))
-            {
-                std::cout << "SampleInputActions::SampleDown " << "pressed" << std::endl;
-            }
+        if(device.isPressed(SampleInputActions::SampleDown))
+        {
+            std::cout << "SampleInputActions::SampleDown " << "pressed" << std::endl;
+        }
 
-
+        SDL_GL_SwapWindow(w);
     }
 
 
