@@ -32,7 +32,8 @@ private:
 protected:
     std::stack<sdli::InputContext*> contextStack_;
 
-    void handleKeyboard(const RawInputData&raw);
+    void handleKeyboard(const RawInputData& raw);
+    void handleGamecontroller(const RawInputData& raw);
 
 public:
     InputDevice();

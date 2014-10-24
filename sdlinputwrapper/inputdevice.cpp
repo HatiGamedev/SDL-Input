@@ -21,6 +21,16 @@ bool isReleased(const LogicDigitalData& d)
             && d.previousStatus != d.currentStatus;
 }
 
+bool isDown(const LogicDigitalData& d)
+{
+    return d.currentStatus;
+}
+
+bool isUp(const LogicDigitalData& d)
+{
+    return !d.currentStatus;
+}
+
 void InputDevice::handleKeyboard(const InputDevice::RawInputData& raw)
 {
     auto& ctx = this->contextStack_.top();
@@ -41,6 +51,27 @@ void InputDevice::handleKeyboard(const InputDevice::RawInputData& raw)
         ctx->fireCallbacks(inputAction, sdli::CallType::OnRelease);
         return;
     }
+}
+
+void InputDevice::handleGamecontroller(const InputDevice::RawInputData& raw)
+{
+    auto& ctx = this->contextStack_.top();
+
+    auto inputAction = ctx->buttonAction(static_cast<SDL_GameControllerButton>(raw.rawInput));
+    auto& logic = logicDigitalData[inputAction];
+
+    logic.currentStatus = raw.pollResult;
+
+    if(::sdli::isPressed(logic))
+    {
+        ctx->fireCallbacks(inputAction, sdli::CallType::OnPress);
+    }
+
+    if(::sdli::isPressed(logic))
+    {
+        ctx->fireCallbacks(inputAction, sdli::CallType::OnPress);
+    }
+
 }
 
 InputDevice::InputDevice()
@@ -91,6 +122,10 @@ void InputDevice::dispatch()
         case InputType::Keyboard:
             handleKeyboard(d);
             break;
+
+        case InputType::Gamecontroller:
+            handleGamecontroller(d);
+            break;
         default:
             break;
 //        case InputType::Keyboard:
@@ -136,8 +171,9 @@ bool InputDevice::isPressed(InputAction action)
         return ::IS_PRESSED_UNDEFINED;
     }
 
-    return logicDigitalData[action].currentStatus
-            && logicDigitalData[action].previousStatus != logicDigitalData[action].currentStatus;
+    auto& l = logicDigitalData[action];
+
+    return ::sdli::isPressed(l);
 }
 
 bool InputDevice::isReleased(InputAction action)
@@ -147,8 +183,9 @@ bool InputDevice::isReleased(InputAction action)
         return ::IS_RELEASED_UNDEFINED;
     }
 
-    return !logicDigitalData[action].currentStatus
-            && logicDigitalData[action].previousStatus != logicDigitalData[action].currentStatus;;
+    auto& l = logicDigitalData[action];
+
+    return ::sdli::isReleased(l);
 }
 
 bool InputDevice::isDown(InputAction action)
@@ -157,8 +194,10 @@ bool InputDevice::isDown(InputAction action)
     {
         return ::IS_DOWN_UNDEFINED;
     }
-    std::function<void()> test;
-    return logicDigitalData[action].currentStatus;
+
+    auto& l = logicDigitalData[action];
+
+    return ::sdli::isDown(l);
 }
 
 bool InputDevice::isUp(InputAction action)
@@ -168,7 +207,9 @@ bool InputDevice::isUp(InputAction action)
         return ::IS_UP_UNDEFINED;
     }
 
-    return logicDigitalData[action].currentStatus;
+    auto& l = logicDigitalData[action];
+
+    return ::sdli::isUp(l);
 }
 
 void InputDevice::pushContext(InputContext* newContext)
