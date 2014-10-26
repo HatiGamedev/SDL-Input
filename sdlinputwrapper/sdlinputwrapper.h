@@ -2,7 +2,7 @@
 #define SDLINPUTWRAPPER_H
 
 #include "processor.h"
-#include "inputdevice.h"
-#include "inputcontext.h"
+#include "interface.h"
+#include "context.h"
 
 #endif // SDLINPUTWRAPPER_H

@@ -7,16 +7,19 @@
 #include <SDL2/SDL_events.h>
 
 #include "sdli_definitions.h"
+#include "device.h"
 
 namespace sdli {
 
 class Processor
 {
-    std::map<sdli::ContextId, std::unique_ptr<sdli::InputContext>> contextMap;
+    std::map<sdli::ContextId, std::unique_ptr<sdli::Context>> contextMap;
 
-    std::unique_ptr<sdli::InputDevice> keyboard;
-    std::map<Sint32, std::unique_ptr<sdli::InputDevice>> gamecontrollers;
+    std::unique_ptr<sdli::Interface> keyboard;
+    std::map<Sint32, std::unique_ptr<sdli::Interface>> gamecontrollers;
 
+    sdli::Device keyboardDevice;
+    std::vector<sdli::Device> devices;
 
 private:
     void addController(Sint32 controllerId);
@@ -24,8 +27,8 @@ private:
 public:
     Processor();
 
-    sdli::InputContext* createContext(const sdli::ContextId& contextId);
-    sdli::InputDevice* getDevice(sdli::InputType type);
+    sdli::Context* createContext(const sdli::ContextId& contextId);
+    sdli::Device& getDevice(sdli::InputType type);
 
 
 

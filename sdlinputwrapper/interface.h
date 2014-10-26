@@ -13,7 +13,7 @@
 
 namespace sdli {
 
-class InputDevice
+class Interface
 {
 private:
     struct RawInputData
@@ -30,26 +30,25 @@ private:
 
 
 protected:
-    std::stack<sdli::InputContext*> contextStack_;
 
-    void handleKeyboard(const RawInputData& raw);
-    void handleGamecontroller(const RawInputData& raw);
+
+    void handleKeyboard(const Context& ctx, const RawInputData& raw);
+    void handleGamecontroller(const Context& ctx, const RawInputData& raw);
+
+    friend class sdli::Device;
 
 public:
-    InputDevice();
+    Interface();
 
-    void poll();
+    void poll(sdli::Context& ctx);
     void push(InputType type, unsigned int rawInput, int value);
-    void dispatch();
+    void dispatch(Context& ctx);
 
     float getRange(InputAxis axis);
     bool isPressed(InputAction action);
     bool isReleased(InputAction action);
     bool isDown(InputAction action);
     bool isUp(InputAction action);
-
-    void pushContext(sdli::InputContext* newContext);
-    sdli::InputContext* popContext();
 
 };
 

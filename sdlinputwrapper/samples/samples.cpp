@@ -5,6 +5,8 @@
 #include <sdlinputwrapper/sdlinputwrapper.h>
 #include <memory>
 
+#include "device.h"
+
 enum SampleInputActions
 {
     SampleDown,
@@ -17,7 +19,7 @@ enum SampleContext
     Game
 };
 
-void sdlKeyEvent(const SDL_Event& e, sdli::InputDevice& device)
+void sdlKeyEvent(const SDL_Event& e, sdli::Interface& device)
 {
     device.push(sdli::InputType::Keyboard, e.key.keysym.scancode, e.key.state);
 }
@@ -34,7 +36,7 @@ int main(int argc, char** argv)
     bool sampleQuit = false;
 
     auto inputproc = std::unique_ptr<sdli::Processor>(new sdli::Processor);
-    auto device = inputproc->getDevice(sdli::InputType::Keyboard);
+    auto& device = inputproc->getDevice(sdli::InputType::Keyboard);
 
     auto ctx1 = inputproc->createContext(SampleContext::Menu);
     auto ctx2 = inputproc->createContext(SampleContext::Game);
@@ -58,7 +60,7 @@ int main(int argc, char** argv)
 
     auto sdl_glContext = SDL_GL_CreateContext(w);
 
-    device->pushContext(ctx1);
+    device.pushContext(ctx1);
 
     SDL_Event event;
     while(!sampleQuit)
@@ -78,10 +80,10 @@ int main(int argc, char** argv)
             inputproc->handleSdlEvents(event);
 
         }
-        device->poll();
+        device.poll();
 
-        device->dispatch();
-        if(device->isPressed(SampleInputActions::SampleDown))
+        device.dispatch();
+        if(device.isPressed(SampleInputActions::SampleDown))
         {
 //            std::cout << "SampleInputActions::SampleDown " << "pressed" << std::endl;
         }

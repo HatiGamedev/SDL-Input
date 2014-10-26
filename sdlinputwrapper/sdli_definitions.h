@@ -42,11 +42,21 @@ enum class InputType
 
 // Forward declarations
 class Processor;
-class InputContext;
-class InputDevice;
+class Context;
+class Interface;
+class Device;
 
 using Callback = std::function<void()>;
 using CallList = std::vector<Callback>;
+
+
+namespace {
+    const bool IS_DOWN_UNDEFINED = false;
+    const bool IS_UP_UNDEFINED = true;
+    const bool IS_RELEASED_UNDEFINED = false;
+    const bool IS_PRESSED_UNDEFINED = false;
+    const float RANGE_UNDEFINED = 0.0f;
+}
 
 } // sdli
 

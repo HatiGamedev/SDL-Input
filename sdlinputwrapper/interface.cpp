@@ -1,12 +1,6 @@
-#include "inputdevice.h"
-#include "inputcontext.h"
-namespace {
-    const bool IS_DOWN_UNDEFINED = false;
-    const bool IS_UP_UNDEFINED = true;
-    const bool IS_RELEASED_UNDEFINED = false;
-    const bool IS_PRESSED_UNDEFINED = false;
-    const float RANGE_UNDEFINED = 0.0f;
-}
+#include "interface.h"
+#include "context.h"
+
 namespace sdli {
 
 bool isPressed(const LogicDigitalData& d)
@@ -31,11 +25,11 @@ bool isUp(const LogicDigitalData& d)
     return !d.currentStatus;
 }
 
-void InputDevice::handleKeyboard(const InputDevice::RawInputData& raw)
+void Interface::handleKeyboard(const sdli::Context& ctx, const Interface::RawInputData& raw)
 {
-    auto& ctx = this->contextStack_.top();
+//    auto& ctx = this->contextStack_.top();
 
-    auto inputAction = ctx->keyAction(static_cast<SDL_Scancode>(raw.rawInput));
+    auto inputAction = ctx.keyAction(static_cast<SDL_Scancode>(raw.rawInput));
     auto& logic = logicDigitalData[inputAction];
 
 //    logic.previousStatus = logic.currentStatus;
@@ -43,20 +37,21 @@ void InputDevice::handleKeyboard(const InputDevice::RawInputData& raw)
 
     if(::sdli::isPressed(logic))
     {
-        ctx->fireCallbacks(inputAction, sdli::CallType::OnPress);
+        ctx.fireCallbacks(inputAction, sdli::CallType::OnPress);
         return;
     }
     if(::sdli::isReleased(logic))
     {
-        ctx->fireCallbacks(inputAction, sdli::CallType::OnRelease);
+        ctx.fireCallbacks(inputAction, sdli::CallType::OnRelease);
         return;
     }
+
 }
 
-void InputDevice::handleGamecontroller(const InputDevice::RawInputData& raw)
+void Interface::handleGamecontroller(const sdli::Context& ctx, const Interface::RawInputData& raw)
 {
-    auto& ctx = this->contextStack_.top();
-
+//    auto& ctx = this->contextStack_.top();
+/*
     auto inputAction = ctx->buttonAction(static_cast<SDL_GameControllerButton>(raw.rawInput));
     auto& logic = logicDigitalData[inputAction];
 
@@ -71,21 +66,15 @@ void InputDevice::handleGamecontroller(const InputDevice::RawInputData& raw)
     {
         ctx->fireCallbacks(inputAction, sdli::CallType::OnPress);
     }
-
+*/
 }
 
-InputDevice::InputDevice()
+Interface::Interface()
 {
 }
 
-void InputDevice::poll()
+void Interface::poll(sdli::Context& ctx)
 {
-    if(this->contextStack_.empty())
-    {
-        return;
-    }
-
-
     auto sdl_keystate = SDL_GetKeyboardState(NULL);
 //    for(auto& i : keyboardKeys)
 //    {
@@ -97,19 +86,14 @@ void InputDevice::poll()
 
 }
 
-void InputDevice::push(InputType type, unsigned int rawInput, int value)
+void Interface::push(InputType type, unsigned int rawInput, int value)
 {
     perFrameCaptures.emplace_back(RawInputData{type, rawInput, value});
 }
 
 //TODO: evaluate isPressed correctly - detect changes over multiple samples
-void InputDevice::dispatch()
+void Interface::dispatch(sdli::Context& ctx)
 {
-    if(this->contextStack_.empty())
-    {
-        return;
-    }
-
     for(auto& i : logicDigitalData)
     {
         i.second.previousStatus = i.second.currentStatus;
@@ -120,11 +104,11 @@ void InputDevice::dispatch()
         switch(d.type)
         {
         case InputType::Keyboard:
-            handleKeyboard(d);
+            handleKeyboard(ctx, d);
             break;
 
         case InputType::Gamecontroller:
-            handleGamecontroller(d);
+            handleGamecontroller(ctx, d);
             break;
         default:
             break;
@@ -152,23 +136,21 @@ void InputDevice::dispatch()
     perFrameCaptures.clear();
 }
 
-float InputDevice::getRange(InputAxis axis)
+float Interface::getRange(InputAxis axis)
 {
-    if(contextStack_.empty()
-            || logicAnalogData.find(axis) == logicAnalogData.end())
+    if(logicAnalogData.find(axis) == logicAnalogData.end())
     {
-        return RANGE_UNDEFINED;
+        return ::sdli::RANGE_UNDEFINED;
     }
 
     return logicAnalogData[axis].currentStatus;
 }
 
-bool InputDevice::isPressed(InputAction action)
+bool Interface::isPressed(InputAction action)
 {
-    if(contextStack_.empty()
-            || logicDigitalData.find(action) == logicDigitalData.end())
+    if(logicDigitalData.find(action) == logicDigitalData.end())
     {
-        return ::IS_PRESSED_UNDEFINED;
+        return ::sdli::IS_PRESSED_UNDEFINED;
     }
 
     auto& l = logicDigitalData[action];
@@ -176,11 +158,11 @@ bool InputDevice::isPressed(InputAction action)
     return ::sdli::isPressed(l);
 }
 
-bool InputDevice::isReleased(InputAction action)
+bool Interface::isReleased(InputAction action)
 {
-    if(contextStack_.empty() || logicDigitalData.find(action) == logicDigitalData.end())
+    if(logicDigitalData.find(action) == logicDigitalData.end())
     {
-        return ::IS_RELEASED_UNDEFINED;
+        return ::sdli::IS_RELEASED_UNDEFINED;
     }
 
     auto& l = logicDigitalData[action];
@@ -188,11 +170,11 @@ bool InputDevice::isReleased(InputAction action)
     return ::sdli::isReleased(l);
 }
 
-bool InputDevice::isDown(InputAction action)
+bool Interface::isDown(InputAction action)
 {
-    if(contextStack_.empty() || logicDigitalData.find(action) == logicDigitalData.end())
+    if(logicDigitalData.find(action) == logicDigitalData.end())
     {
-        return ::IS_DOWN_UNDEFINED;
+        return ::sdli::IS_DOWN_UNDEFINED;
     }
 
     auto& l = logicDigitalData[action];
@@ -200,21 +182,16 @@ bool InputDevice::isDown(InputAction action)
     return ::sdli::isDown(l);
 }
 
-bool InputDevice::isUp(InputAction action)
+bool Interface::isUp(InputAction action)
 {
-    if(contextStack_.empty() || logicDigitalData.find(action) == logicDigitalData.end())
+    if(logicDigitalData.find(action) == logicDigitalData.end())
     {
-        return ::IS_UP_UNDEFINED;
+        return ::sdli::IS_UP_UNDEFINED;
     }
 
     auto& l = logicDigitalData[action];
 
     return ::sdli::isUp(l);
-}
-
-void InputDevice::pushContext(InputContext* newContext)
-{
-    contextStack_.push(newContext);
 }
 
 }

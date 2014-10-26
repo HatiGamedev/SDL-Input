@@ -11,7 +11,7 @@
 
 namespace sdli {
 
-class InputContext
+class Context
 {
     struct InputAxisMapping
     {
@@ -31,12 +31,12 @@ class InputContext
     std::map<unsigned int, std::map<sdli::CallType, sdli::CallList>> callbacks_;
 
 public:
-    InputContext(const sdli::ContextId& contextId);
+    Context(const sdli::ContextId& contextId);
 
-    InputContext(const InputContext&) =delete;
-    InputContext(InputContext&&) =delete;
-    InputContext& operator=(const InputContext&) =delete;
-    InputContext& operator=(InputContext&&) =delete;
+    Context(const Context&) =delete;
+    Context(Context&&) =delete;
+    Context& operator=(const Context&) =delete;
+    Context& operator=(Context&&) =delete;
 
     sdli::ContextId id() const;
 
@@ -46,7 +46,7 @@ public:
     void mapAnalog(SDL_GameControllerAxis rawAxis, sdli::InputAxis axis, float normalize = 1.0f);
 
     void addCallback(sdli::InputAction action, sdli::CallType type, const sdli::Callback& callback);
-    void fireCallbacks(sdli::InputAction action, sdli::CallType type);
+    void fireCallbacks(sdli::InputAction action, sdli::CallType type) const;
 
     InputAction keyAction(SDL_Scancode rawScancode) const;
     InputAction buttonAction(SDL_GameControllerButton rawButton) const;
