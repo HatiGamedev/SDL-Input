@@ -1,9 +1,9 @@
 #include "device.h"
 #include "interface.h"
 #include "context.h"
+#include <iostream>
 
-
-#define _DEVICE_GUARD_(x, defVal) if(!(x)) {return defVal;}
+#define _DEVICE_GUARD_(x, defVal) if(!(x)) {std::cout << "guard hits" << std::endl; return defVal;}
 
 namespace sdli {
 

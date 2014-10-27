@@ -3,7 +3,7 @@
 #include "context.h"
 #include "interface.h"
 #include <iostream>
-
+#include <SDL2/SDL.h>
 
 namespace sdli
 {
@@ -12,7 +12,21 @@ void Processor::addController(Sint32 controllerId)
 {
     auto controller = SDL_GameControllerOpen(controllerId);
 
-    gamecontrollers.emplace(std::make_pair(controllerId, std::unique_ptr<sdli::Interface>(new sdli::Interface)));
+    printf("%i\n", SDL_GameControllerGetAttached(controller));
+//    printf("%i\n", SDL_GameControllerEventState(SDL_IGNORE)); /* prints 0 */
+    printf("%i\n", SDL_GameControllerEventState(SDL_QUERY));  /* prints 0 */
+
+    rawcontrollers.emplace(std::make_pair(controllerId, controller));
+
+    if(gamecontrollers.find(controllerId)==gamecontrollers.end())
+    {
+        std::cout << "creating new interface .." << std::endl;
+        gamecontrollers.emplace(std::make_pair(controllerId, std::unique_ptr<sdli::Interface>(new sdli::Interface)));
+    }
+    else
+    {
+        std::cout << "recycle old interface" <<std::endl;
+    }
     getControllerDevice(controllerId);
 }
 
@@ -23,7 +37,7 @@ Device& Processor::getControllerDevice(Sint32 controllerId)
         // Create controller with according interface id
         if(gamecontrollerDevices.find(controllerId)!=gamecontrollerDevices.end())
         {
-            std::cout << "recycle null interface" << std::endl;
+            std::cout << "recycle null device" << std::endl;
             gamecontrollerDevices.at(controllerId)->setInterface(gamecontrollers.at(controllerId).get());
         }
         else
@@ -93,12 +107,13 @@ void Processor::handleSdlEvents(const SDL_Event& e)
         break;
     case SDL_CONTROLLERDEVICEREMOVED:
         std::cout << "Controller removed " << ":" << e.cdevice.which << std::endl;
+//        SDL_GameControllerClose(rawcontrollers.at(e.cdevice.which));
         break;
     case SDL_CONTROLLERBUTTONDOWN:
+        std::cout << "test:" << e.cbutton.which << std::endl;
         if(gamecontrollers.find(e.cbutton.which)!=gamecontrollers.end())
         {
             gamecontrollers.at(e.cbutton.which)->push(InputType::Gamecontroller, e.cbutton.button, e.cbutton.state);
-
         }
         break;
     case SDL_CONTROLLERBUTTONUP:

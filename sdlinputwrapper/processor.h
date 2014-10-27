@@ -17,6 +17,7 @@ class Processor
 
     std::unique_ptr<sdli::Interface> keyboard;
     std::map<Sint32, std::unique_ptr<sdli::Interface>> gamecontrollers;
+    std::map<Sint32, SDL_GameController*> rawcontrollers;
 
     sdli::Device keyboardDevice;
     std::map<Sint32, std::unique_ptr<sdli::Device>> gamecontrollerDevices;
@@ -32,9 +33,6 @@ public:
     sdli::Context* getContext(const sdli::ContextId& contextId) const;
 
     sdli::Device& getDevice(sdli::InputType type, Sint32 id);
-
-
-
 
 
     void handleSdlEvents(const SDL_Event& e);
