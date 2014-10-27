@@ -11,6 +11,11 @@ class Device
     sdli::Interface* interface {nullptr};
     std::stack<sdli::Context*> contextStack_;
 
+    friend class Processor;
+
+protected:
+    void setInterface(sdli::Interface* interface);
+
 public:
     Device(sdli::Interface* interface);
 

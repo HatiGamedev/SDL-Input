@@ -33,11 +33,14 @@ struct LogicAnalogData
     float currentStatus{0.0f};
 };
 
-
+/**
+ * @brief Binary encoding of an interface
+ */
 enum class InputType
 {
-    Keyboard,
-    Gamecontroller
+    Keyboard = 1,
+    Gamecontroller = 2,
+    Keyboard_AND_Gamecontroller = InputType::Keyboard | InputType::Gamecontroller
 };
 
 // Forward declarations

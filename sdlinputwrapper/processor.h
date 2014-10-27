@@ -19,16 +19,19 @@ class Processor
     std::map<Sint32, std::unique_ptr<sdli::Interface>> gamecontrollers;
 
     sdli::Device keyboardDevice;
-    std::vector<sdli::Device> devices;
+    std::map<Sint32, std::unique_ptr<sdli::Device>> gamecontrollerDevices;
 
 private:
     void addController(Sint32 controllerId);
+    sdli::Device& getControllerDevice(Sint32 controllerId);
 
 public:
     Processor();
 
     sdli::Context* createContext(const sdli::ContextId& contextId);
-    sdli::Device& getDevice(sdli::InputType type);
+    sdli::Context* getContext(const sdli::ContextId& contextId) const;
+
+    sdli::Device& getDevice(sdli::InputType type, Sint32 id);
 
 
 

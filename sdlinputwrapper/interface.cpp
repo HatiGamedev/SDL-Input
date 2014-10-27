@@ -51,22 +51,22 @@ void Interface::handleKeyboard(const sdli::Context& ctx, const Interface::RawInp
 void Interface::handleGamecontroller(const sdli::Context& ctx, const Interface::RawInputData& raw)
 {
 //    auto& ctx = this->contextStack_.top();
-/*
-    auto inputAction = ctx->buttonAction(static_cast<SDL_GameControllerButton>(raw.rawInput));
+
+    auto inputAction = ctx.buttonAction(static_cast<SDL_GameControllerButton>(raw.rawInput));
     auto& logic = logicDigitalData[inputAction];
 
     logic.currentStatus = raw.pollResult;
 
     if(::sdli::isPressed(logic))
     {
-        ctx->fireCallbacks(inputAction, sdli::CallType::OnPress);
+        ctx.fireCallbacks(inputAction, sdli::CallType::OnPress);
     }
 
-    if(::sdli::isPressed(logic))
+    if(::sdli::isReleased(logic))
     {
-        ctx->fireCallbacks(inputAction, sdli::CallType::OnPress);
+        ctx.fireCallbacks(inputAction, sdli::CallType::OnRelease);
     }
-*/
+
 }
 
 Interface::Interface()

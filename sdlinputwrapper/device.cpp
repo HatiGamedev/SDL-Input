@@ -8,6 +8,11 @@
 namespace sdli {
 
 
+void Device::setInterface(Interface* interface)
+{
+    this->interface = interface;
+}
+
 Device::Device(Interface* interface)
     : interface(interface)
 {
@@ -18,8 +23,13 @@ void Device::pushContext(Context* ctx)
     contextStack_.push(ctx);
 }
 
-Context*Device::popContext()
+Context* Device::popContext()
 {
+    if(contextStack_.empty())
+    {
+        return nullptr;
+    }
+
     sdli::Context* t = contextStack_.top();
     contextStack_.pop();
     return t;
@@ -28,6 +38,7 @@ Context*Device::popContext()
 void Device::poll()
 {
     _DEVICE_GUARD_(interface, ;);
+//    _DEVICE_GUARD_(contextStack_.top(), ;);
 
     interface->poll(*contextStack_.top());
 }
@@ -35,6 +46,7 @@ void Device::poll()
 void Device::dispatch()
 {
     _DEVICE_GUARD_(interface, ;);
+//    _DEVICE_GUARD_(contextStack_.top(), ;);
 
     interface->dispatch(*contextStack_.top());
 }
