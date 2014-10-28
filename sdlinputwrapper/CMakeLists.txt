@@ -14,9 +14,17 @@ INCLUDE_DIRECTORIES(
 )
 
 
-add_subdirectory(sdlinputwrapper-tests)
-add_subdirectory(samples)
 
+OPTION(SDLI_Enable_Tests "Compiles sdli gtests" OFF)
+OPTION(SDLI_Enable_Samples "Compiles the sdli samples" OFF)
+
+IF(SDLI_Enable_Tests)
+    add_subdirectory(sdlinputwrapper-tests)
+ENDIF()
+
+IF(SDLI_Enable_Samples)
+    add_subdirectory(samples)
+ENDIF()
 
 #add_executable(${PROJECT_NAME} ${SDLINPUTWRAPPER_LIB_SRC_LIST})
 add_library(${PROJECT_NAME} ${SDLINPUTWRAPPER_LIB_SRC_LIST})

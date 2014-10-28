@@ -89,6 +89,7 @@ sdli::Device& Processor::getDevice(InputType type, Sint32 id)
         break;
     default:
         assert(false);
+        std::cout << "hello world" << std::endl;
         break;
     }
 }

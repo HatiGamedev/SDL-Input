@@ -3,7 +3,6 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 aux_source_directory(. SDLINPUTWRAPPER_TEST_SRC_LIST)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11") # enable C++11
 
-
 FIND_PACKAGE(GTest REQUIRED)
 
 include(FindPkgConfig)
