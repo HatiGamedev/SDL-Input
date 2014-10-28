@@ -13,7 +13,7 @@ Compiler support:
 * Clang
 * gcc (untested)
 * MinGW-w64 (untested)
-* MSCV (planned - untested)
+* VS13 MSVC (planned - untested)
 
 Conceptual (move to wiki later):
 * Processor: represent an interface used by your game engine to get devices and create new contexts. Also handles sdl events. (You can use callbacks to add new functionality to events)

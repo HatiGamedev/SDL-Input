@@ -6,3 +6,7 @@ build-*
 
 # CLion EAP
 .idea
+
+
+Publish scripts
+publish.sh
