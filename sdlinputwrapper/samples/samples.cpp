@@ -66,7 +66,7 @@ int main(int argc, char** argv)
     ctx1->addCallback(SampleInputActions::CHANGE_CTX, sdli::CallType::OnPress, [=, &device, &pad]()
     {
         device.popContext();
-        device.pushContext(ctx1);
+        device.pushContext(ctx2);
 
         pad.popContext();
         pad.pushContext(ctx2);
@@ -115,7 +115,7 @@ int main(int argc, char** argv)
             }
             inputproc->handleSdlEvents(event);
         }
-//        device.poll();
+        device.poll();
         pad.poll();
 //        SDL_Event dbg;
 //        dbg.type = SDL_CONTROLLERBUTTONDOWN;
@@ -124,8 +124,9 @@ int main(int argc, char** argv)
 //        dbg.cbutton.button = SDL_CONTROLLER_BUTTON_A;
 //        inputproc->handleSdlEvents(dbg);
 
-//        device.dispatch();
-        pad.dispatch();
+        device.dispatch();
+//        pad.dispatch();
+
         if(device.isPressed(SampleInputActions::SampleDown))
         {
 //            std::cout << "SampleInputActions::SampleDown " << "pressed" << std::endl;
