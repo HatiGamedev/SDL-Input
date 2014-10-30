@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "device.h"
+#include <sdlinputwrapper/callback.h>
 
 enum SampleInputActions
 {
@@ -29,6 +30,20 @@ int main(int argc, char** argv)
 {
     std::setbuf(stdout, NULL); // used to always flush std::cout
 
+    std::map<int, sdli::util::Lambda<void(void)>> testmap;
+    sdli::util::Lambda<void(void)> lambdaStore;
+    auto t = ([argv](){ std::cout << argv[0] << std::endl; });
+    lambdaStore = t;
+
+    testmap.emplace(std::make_pair<int, sdli::util::Lambda<void(void)>>(1, t));
+
+    lambdaStore();
+//    lambdaStore = [argv]() {
+//        std::cout << argv[0] << std::endl;
+//        return;
+//    };
+
+    return 0;
     auto sdl_init_status = SDL_Init(SDL_INIT_EVENTS
                                      | SDL_INIT_JOYSTICK
                                      | SDL_INIT_GAMECONTROLLER);
