@@ -13,14 +13,15 @@ namespace sdli {
 
 class Processor
 {
-    std::map<sdli::ContextId, std::unique_ptr<sdli::Context>> contextMap;
+    /// TODO: proposal: linearilize
+    std::map<sdli::ContextId, std::unique_ptr<sdli::Context>> contextMap; /// TODO: using array to access contexts
 
     std::unique_ptr<sdli::Interface> keyboard;
-    std::map<Sint32, std::unique_ptr<sdli::Interface>> gamecontrollers;
+    std::map<Sint32, std::unique_ptr<sdli::Interface>> gamecontrollers; /// TODO: using array to access interfaces
     std::map<Sint32, SDL_GameController*> rawcontrollers;
 
     sdli::Device keyboardDevice;
-    std::map<Sint32, std::unique_ptr<sdli::Device>> gamecontrollerDevices;
+    std::map<Sint32, std::unique_ptr<sdli::Device>> gamecontrollerDevices; /// TODO: using array to access devices
 
 private:
     void addController(Sint32 controllerId);
@@ -37,6 +38,8 @@ public:
 
     void handleSdlEvents(const SDL_Event& e);
 
+    void dispatch();
+    void poll();
 
 
 };

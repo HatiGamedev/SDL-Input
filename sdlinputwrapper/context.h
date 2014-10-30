@@ -28,7 +28,7 @@ class Context
     std::map<SDL_GameControllerButton, InputAction> gameControllerButtons;
     std::map<SDL_GameControllerAxis, InputAxisMapping> gameControllerAxes;
 
-    std::map<unsigned int, std::map<sdli::CallType, sdli::CallList>> callbacks_;
+    std::map<sdli::InputAction, std::map<sdli::CallType, sdli::CallList>> callbacks_;
 
 public:
     Context(const sdli::ContextId& contextId);

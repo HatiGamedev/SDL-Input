@@ -57,13 +57,13 @@ int main(int argc, char** argv)
 
     ctx2->mapDigital(SDL_CONTROLLER_BUTTON_X, SampleInputActions::CHANGE_CTX);
 
-
-    ctx1->addCallback(SampleInputActions::SampleDown, sdli::CallType::OnPress, [=]()
+    auto l = []()
     {
         std::cout << "Hello";
-    });
+    };
+    ctx1->addCallback(SampleInputActions::SampleDown, sdli::CallType::OnPress, l);
 
-    ctx1->addCallback(SampleInputActions::CHANGE_CTX, sdli::CallType::OnPress, [=, &device, &pad]()
+    auto l2 = [ctx1, ctx2, &device, &pad]()
     {
         device.popContext();
         device.pushContext(ctx2);
@@ -71,7 +71,9 @@ int main(int argc, char** argv)
         pad.popContext();
         pad.pushContext(ctx2);
         std::cout << "change to ctx2" << std::endl;
-    });
+    };
+
+    ctx1->addCallback(SampleInputActions::CHANGE_CTX, sdli::CallType::OnPress, l2);
 
     ctx2->addCallback(SampleInputActions::CHANGE_CTX, sdli::CallType::OnPress, [=, &device, &pad]()
     {
@@ -125,7 +127,7 @@ int main(int argc, char** argv)
 //        inputproc->handleSdlEvents(dbg);
 
         device.dispatch();
-//        pad.dispatch();
+        pad.dispatch();
 
         if(device.isPressed(SampleInputActions::SampleDown))
         {

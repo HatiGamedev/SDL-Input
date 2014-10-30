@@ -126,6 +126,16 @@ void Processor::handleSdlEvents(const SDL_Event& e)
     }
 }
 
+void Processor::dispatch()
+{
+
+}
+
+void Processor::poll()
+{
+
+}
+
 
 
 
