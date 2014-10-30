@@ -1,5 +1,3 @@
-This is supposed as a wrapper around SDL2's input api.
-
 Development status: Getting interface done (Do use for prod code with caution - overhauls happen)
 
 Goals of the library:
@@ -10,10 +8,15 @@ Goals of the library:
 
 
 Compiler support:
-* Clang
-* gcc (untested)
+* Clang (Requirement for 'master' and 'develop' branch)
+* gcc (Requirement for 'master' branch)
 * MinGW-w64 (untested)
 * VS13 MSVC (planned - untested)
+
+Branches:
+* master: stable build, will contain flags once first working release is out
+* develop: contains the latest compile-able version, mostly untested by other people or lacking test code
+
 
 Conceptual (move to wiki later):
 * Processor: represent an interface used by your game engine to get devices and create new contexts. Also handles sdl events. (You can use callbacks to add new functionality to events)
@@ -23,8 +26,8 @@ Conceptual (move to wiki later):
 * A device requires an active context (default is no context - as no mapping)
 * It is highly advised to use enums (or enum class) as arguments for InputAction, InputAxis, ContextId
 
-See samples for intended usage.
+See samples/ for intended usage.
 
-If you find anything lacking tickets and contribution are welcome.
+If you find anything lacking tickets, patches and contribution are welcome. (Especially once I start optimization phase.)
 
-Multiple library support may be added if concepts are not broken by doing so.
+Multiple library support may be added if concepts are not broken by doing so. (glfw, sfml)
