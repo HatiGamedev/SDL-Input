@@ -29,76 +29,56 @@ TEST(InputDevice, UnmappedDefaults)
     ASSERT_EQ(true, device.isUp(EInputAction::Down));
 }
 
-#include <memory>
-
-struct Test
+#include "../array.h"
+TEST(SDLIBaseArray, Util)
 {
-    bool isActive;
+    auto array = sdli::util::BaseArray(100);
+    array[0] = 1;
+    ASSERT_EQ(1, array[0]);
+    ASSERT_EQ(1, *array.begin());
+}
+struct DataType
+{
+    int idx;
+    float value;
+    bool flag;
 };
 
-struct TestHandle
+TEST(SDLIArray, Util)
 {
-    Test* mdata{nullptr};
-public:
-    TestHandle(){}
+    unsigned int size = 300000;
+    auto array = sdli::util::Array<DataType>(size);
+//    ASSERT_EQ(size, array.size());
+    array[0].idx = 0;
+    array[1].value = 1.0f;
+    array[2].flag = false;
 
-    // removes copy
-    TestHandle(const TestHandle&) =delete;
-    TestHandle& operator=(const TestHandle&) =delete;
+    ASSERT_EQ(0, array[0].idx);
+    ASSERT_EQ(1.0f, array[1].value);
+    ASSERT_EQ(false, array[2].flag);
 
-    bool isActive() const;
-};
+    for(auto it = array.begin(); it!=array.end(); ++it)
+    {
+        it->idx = 0;
+        it->value = 10.0f;
+        it->flag = true;
+    }
 
-class Proc
-{
-    TestHandle something;
-public:
-    TestHandle& get();
-    void createNew();
-};
-
+    for(auto it = array.begin(); it!=array.end(); ++it)
+    {
+        ASSERT_EQ(0, it->idx);
+        ASSERT_EQ(10.0f, it->value);
+        ASSERT_EQ(true, it->flag);
+    }
+}
 
 int main(int argc, char** argv)
 {
-
-    Proc proc;
-    auto& test = proc.get();
-    std::cout << test.isActive() << std::endl;
-
-    proc.createNew();
-    std::cout << test.isActive() << std::endl;
-
-//    ::testing::InitGoogleTest(&argc, argv);
-//    ::testing::AddGlobalTestEnvironment(new SDL_TestEnviroment);
+    ::testing::InitGoogleTest(&argc, argv);
+    ::testing::AddGlobalTestEnvironment(new SDL_TestEnviroment);
 
 
 
 
-//    return RUN_ALL_TESTS();
-}
-
-
-
-
-
-TestHandle& Proc::get()
-{
-    return something;
-}
-
-void Proc::createNew()
-{
-    something.mdata = new Test;
-    something.mdata->isActive = true;
-
-}
-
-
-bool TestHandle::isActive() const
-{
-    if(mdata)
-    {
-        return mdata->isActive;
-    }
-    return false;
+    return RUN_ALL_TESTS();
 }

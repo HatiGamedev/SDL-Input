@@ -78,19 +78,19 @@ int main(int argc, char** argv)
 
         pad.popContext();
         pad.pushContext(ctx2);
-        std::cout << "change to ctx2" << std::endl;
+        std::cout << "swap to ctx2 while hold" << std::endl;
     };
 
     ctx1->addCallback(SampleInputActions::CHANGE_CTX, sdli::CallType::OnPress, l2);
 
-    ctx2->addCallback(SampleInputActions::CHANGE_CTX, sdli::CallType::OnPress, [=, &device, &pad]()
+    ctx2->addCallback(SampleInputActions::CHANGE_CTX, sdli::CallType::OnRelease, [=, &device, &pad]()
     {
         device.popContext();
         device.pushContext(ctx1);
 
         pad.popContext();
         pad.pushContext(ctx1);
-        std::cout << "change to ctx1" << std::endl;
+        std::cout << "change back to ctx1 - released" << std::endl;
     });
 
     sdli::util::Lambda<void(void)> rawc{ sdli::util::Lambda<void(void)>(&func) };
