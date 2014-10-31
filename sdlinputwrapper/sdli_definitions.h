@@ -2,7 +2,7 @@
 #define SDLI_DEFINITIONS_H
 
 #include <vector>
-#include <functional>
+#include "callback.h"
 
 namespace sdli {
 using InputAction = unsigned int;
@@ -49,7 +49,7 @@ class Context;
 class Interface;
 class Device;
 
-using Callback = std::function<void()>;
+using Callback = sdli::util::Lambda<void(void)>;
 using CallList = std::vector<Callback>;
 
 

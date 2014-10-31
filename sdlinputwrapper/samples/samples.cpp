@@ -21,6 +21,11 @@ enum SampleContext
     Game
 };
 
+void func()
+{
+    std::cout << "raw c function" << std::endl;
+}
+
 void sdlKeyEvent(const SDL_Event& e, sdli::Interface& device)
 {
     device.push(sdli::InputType::Keyboard, e.key.keysym.scancode, e.key.state);
@@ -30,20 +35,6 @@ int main(int argc, char** argv)
 {
     std::setbuf(stdout, NULL); // used to always flush std::cout
 
-    std::map<int, sdli::util::Lambda<void(void)>> testmap;
-    sdli::util::Lambda<void(void)> lambdaStore;
-    auto t = ([argv](){ std::cout << argv[0] << std::endl; });
-    lambdaStore = t;
-
-    testmap.emplace(std::make_pair<int, sdli::util::Lambda<void(void)>>(1, t));
-
-    lambdaStore();
-//    lambdaStore = [argv]() {
-//        std::cout << argv[0] << std::endl;
-//        return;
-//    };
-
-    return 0;
     auto sdl_init_status = SDL_Init(SDL_INIT_EVENTS
                                      | SDL_INIT_JOYSTICK
                                      | SDL_INIT_GAMECONTROLLER);
@@ -62,7 +53,7 @@ int main(int argc, char** argv)
 
     ctx1->mapDigital(SDL_SCANCODE_S, SampleInputActions::SampleDown);
 
-    ctx2->mapDigital(SDL_SCANCODE_S, SampleInputActions::Shoot);
+    ctx2->mapDigital(SDL_SCANCODE_S, SampleInputActions::SampleDown);
 
     ctx1->mapDigital(SDL_SCANCODE_F1, SampleInputActions::CHANGE_CTX);
     ctx2->mapDigital(SDL_SCANCODE_F1, SampleInputActions::CHANGE_CTX);
@@ -99,6 +90,10 @@ int main(int argc, char** argv)
         pad.pushContext(ctx1);
         std::cout << "change to ctx1" << std::endl;
     });
+
+    sdli::util::Lambda<void(void)> rawc{ sdli::util::Lambda<void(void)>(&func) };
+
+    ctx2->addCallback(SampleInputActions::SampleDown, sdli::CallType::OnPress, &func);
 
     ctx1->addCallback(SampleInputActions::SampleDown, sdli::CallType::OnRelease, []()
     {
