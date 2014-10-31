@@ -33,7 +33,7 @@ void sdlKeyEvent(const SDL_Event& e, sdli::Interface& device)
 
 int main(int argc, char** argv)
 {
-    std::setbuf(stdout, NULL); // used to always flush std::cout
+//    std::setbuf(stdout, NULL); // used to always flush std::cout
 
     auto sdl_init_status = SDL_Init(SDL_INIT_EVENTS
                                      | SDL_INIT_JOYSTICK

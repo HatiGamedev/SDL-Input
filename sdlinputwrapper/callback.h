@@ -53,13 +53,15 @@ public:
 
     template<typename T> Lambda<Out(In...)>& operator=(const T& l)
     {
-        functionLambda = new T(l);
-        rawCFunction = l.rawCFunction;
-        executionLambda = [](void* l, In... args) -> Out
+        if(this != &l)
         {
-            return ((T*)l)->operator()(args...);
-        };
-
+            functionLambda = new T(l);
+            rawCFunction = l.rawCFunction;
+            executionLambda = [](void* l, In... args) -> Out
+            {
+                return ((T*)l)->operator()(args...);
+            };
+        }
         return *this;
     }
 
