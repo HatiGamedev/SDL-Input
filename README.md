@@ -1,4 +1,5 @@
-Development status: Getting interface done (Do use for prod code with caution - overhauls happen)
+Development status: alpha (sdli::Device breaking overhauls are unlikely to happen.)
+
 
 Goals of the library:
 * Easy integration
@@ -26,7 +27,16 @@ Conceptual (move to wiki later):
 * A device requires an active context (default is no context - as no mapping)
 * It is highly advised to use enums (or enum class) as arguments for InputAction, InputAxis, ContextId
 
+
+Implementation statistics
+* Keyboard support [30%] - Key Polling
+* Gamecontroller support [20%] - Axis and button polling
+* Joystick support [0%]
+* Mouse support [0%]
+
+
 See samples/ for intended usage.
+
 
 If you find anything lacking tickets, patches and contribution are welcome. (Especially once I start optimization phase.)
 

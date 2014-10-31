@@ -31,6 +31,8 @@ void sdlKeyEvent(const SDL_Event& e, sdli::Interface& device)
     device.push(sdli::InputType::Keyboard, e.key.keysym.scancode, e.key.state);
 }
 
+#include "stub.h"
+
 int main(int argc, char** argv)
 {
 //    std::setbuf(stdout, NULL); // used to always flush std::cout
@@ -120,29 +122,14 @@ int main(int argc, char** argv)
             case SDL_QUIT:
                 sampleQuit = true;
                 break;
-//            case SDL_KEYDOWN:
-//            case SDL_KEYUP:
-//                sdlKeyEvent(event, device);
-//                break;
             }
             inputproc->handleSdlEvents(event);
         }
         device.poll();
         pad.poll();
-//        SDL_Event dbg;
-//        dbg.type = SDL_CONTROLLERBUTTONDOWN;
-//        dbg.cbutton.state = SDL_PRESSED;
-//        dbg.cbutton.which = 0;
-//        dbg.cbutton.button = SDL_CONTROLLER_BUTTON_A;
-//        inputproc->handleSdlEvents(dbg);
 
         device.dispatch();
         pad.dispatch();
-
-        if(device.isPressed(SampleInputActions::SampleDown))
-        {
-//            std::cout << "SampleInputActions::SampleDown " << "pressed" << std::endl;
-        }
 
         SDL_GL_SwapWindow(w);
     }

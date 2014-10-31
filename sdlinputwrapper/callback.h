@@ -1,6 +1,8 @@
 #ifndef CALLBACK_H
 #define CALLBACK_H
 #include <cassert>
+#include <memory>
+
 namespace sdli {
 namespace util {
 

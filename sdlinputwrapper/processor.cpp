@@ -128,12 +128,12 @@ void Processor::handleSdlEvents(const SDL_Event& e)
 
 void Processor::dispatch()
 {
-
+    SDLI_STUB();
 }
 
 void Processor::poll()
 {
-
+    SDLI_STUB();
 }
 
 

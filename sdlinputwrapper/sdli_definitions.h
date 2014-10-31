@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "callback.h"
+#include "stub.h"
 
 namespace sdli {
 using InputAction = unsigned int;
