@@ -23,6 +23,16 @@ void Device::pushContext(Context* ctx)
     contextStack_.push(ctx);
 }
 
+Context* Device::currentContext()
+{
+    if(contextStack_.empty())
+    {
+        return nullptr;
+    }
+
+    return contextStack_.top();
+}
+
 Context* Device::popContext()
 {
     if(contextStack_.empty())
@@ -30,9 +40,9 @@ Context* Device::popContext()
         return nullptr;
     }
 
-    sdli::Context* t = contextStack_.top();
+    auto ctx = contextStack_.top();
     contextStack_.pop();
-    return t;
+    return ctx;
 }
 
 void Device::poll()

@@ -24,6 +24,7 @@ public:
     Device& operator=(const Device&) =delete;
 
     void pushContext(sdli::Context* ctx);
+    sdli::Context* currentContext();
     sdli::Context* popContext();
 
     void poll();
