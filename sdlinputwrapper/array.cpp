@@ -21,6 +21,11 @@ char& BaseArray::operator[](unsigned int idx)
     return *(pBegin + idx);
 }
 
+const char&BaseArray::operator[](unsigned int idx) const
+{
+    return *(pBegin + idx);
+}
+
 char*BaseArray::begin()
 {
     return pBegin;

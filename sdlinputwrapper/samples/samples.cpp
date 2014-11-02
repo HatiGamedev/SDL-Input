@@ -12,13 +12,16 @@ enum SampleInputActions
 {
     SampleDown,
     Shoot,
-    CHANGE_CTX
+    CHANGE_CTX,
+
+    GAME_QUIT
 };
 
 enum SampleContext
 {
-    Menu,
-    Game
+    GameMod,
+    Game,
+    Menu
 };
 
 void func()
@@ -50,7 +53,7 @@ int main(int argc, char** argv)
 
     /** BEG Mappings **/
 
-    auto ctx1 = inputproc->createContext(SampleContext::Menu);
+    auto ctx1 = inputproc->createContext(SampleContext::GameMod);
     auto ctx2 = inputproc->createContext(SampleContext::Game);
 
     ctx1->mapDigital(SDL_SCANCODE_S, SampleInputActions::SampleDown);
@@ -64,6 +67,7 @@ int main(int argc, char** argv)
     ctx1->mapDigital(SDL_CONTROLLER_BUTTON_X, SampleInputActions::CHANGE_CTX);
 
     ctx2->mapDigital(SDL_CONTROLLER_BUTTON_X, SampleInputActions::CHANGE_CTX);
+    ctx2->mapDigital(SDL_SCANCODE_ESCAPE, SampleInputActions::GAME_QUIT);
 
     auto l = []()
     {
@@ -81,6 +85,10 @@ int main(int argc, char** argv)
         std::cout << "swap to ctx2 while hold" << std::endl;
     };
 
+    ctx2->addCallback(SampleInputActions::GAME_QUIT, sdli::CallType::OnPress, [&sampleQuit](){
+        sampleQuit = true;
+    });
+
     ctx1->addCallback(SampleInputActions::CHANGE_CTX, sdli::CallType::OnPress, l2);
 
     ctx2->addCallback(SampleInputActions::CHANGE_CTX, sdli::CallType::OnRelease, [=, &device, &pad]()
@@ -92,8 +100,6 @@ int main(int argc, char** argv)
         pad.pushContext(ctx1);
         std::cout << "change back to ctx1 - released" << std::endl;
     });
-
-    sdli::util::Lambda<void(void)> rawc{ sdli::util::Lambda<void(void)>(&func) };
 
     ctx2->addCallback(SampleInputActions::SampleDown, sdli::CallType::OnPress, &func);
 
@@ -112,7 +118,11 @@ int main(int argc, char** argv)
     device.pushContext(ctx1);
     pad.pushContext(ctx1);
 
+
     SDL_Event event;
+
+
+
     while(!sampleQuit)
     {
         while(SDL_PollEvent(&event))

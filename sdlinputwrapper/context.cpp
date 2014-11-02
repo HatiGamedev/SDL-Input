@@ -4,7 +4,8 @@ namespace sdli
 {
 
 Context::Context(const ContextId& contextId)
-    : contextId_(contextId)
+    : contextId_(contextId),
+      gameControllerAxes(SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_MAX)
 {
 }
 
@@ -27,7 +28,10 @@ void Context::mapDigital(SDL_GameControllerButton raw, InputAction a)
 
 void Context::mapAnalog(SDL_GameControllerAxis raw, InputAxis a, float normalize)
 {
-    gameControllerAxes.emplace(std::make_pair(raw, InputAxisMapping{a, normalize}));
+    gameControllerAxes[raw] = InputAxisMapping{};
+    gameControllerAxes[raw].axis = a;
+    gameControllerAxes[raw].normalizeValue = normalize;
+//    gameControllerAxes.emplace(std::make_pair(raw, InputAxisMapping{a, normalize}));
 }
 
 void Context::addCallback(InputAction action, CallType type, const Callback& callback)
@@ -74,12 +78,13 @@ InputAction Context::buttonAction(SDL_GameControllerButton rawButton) const
 
 InputAxis Context::controllerAxis(SDL_GameControllerAxis rawAxis) const
 {
-    if(gameControllerAxes.find(rawAxis) == gameControllerAxes.end())
+
+    if(gameControllerAxes[rawAxis].axis == -1u)
     {
         return sdli::INVALID_INPUT_AXIS;
     }
 
-    return gameControllerAxes.at(rawAxis).axis;
+    return gameControllerAxes[rawAxis].axis;
 }
 
 

@@ -8,6 +8,7 @@
 #include <map>
 
 #include "sdli_definitions.h"
+#include "array.h"
 
 namespace sdli {
 
@@ -15,18 +16,20 @@ class Context
 {
     struct InputAxisMapping
     {
-        InputAxis axis;
-        float normalizeValue;
+        InputAxis axis{-1u};
+        float normalizeValue{1.0f};
     };
 
 
     const sdli::ContextId contextId_;
 
-
     std::map<SDL_Scancode, InputAction> keyboardKeys;
 
+
     std::map<SDL_GameControllerButton, InputAction> gameControllerButtons;
-    std::map<SDL_GameControllerAxis, InputAxisMapping> gameControllerAxes;
+
+    sdli::util::Array<InputAxisMapping> gameControllerAxes;
+//    std::map<SDL_GameControllerAxis, InputAxisMapping> gameControllerAxes;
 
     std::map<sdli::InputAction, std::map<sdli::CallType, sdli::CallList>> callbacks_;
 

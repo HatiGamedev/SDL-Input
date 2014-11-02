@@ -18,6 +18,8 @@ public:
 
     char& operator[](unsigned int idx);
 
+    const char& operator[](unsigned int idx) const;
+
     char* begin();
     char* end();
 
@@ -37,6 +39,11 @@ public:
     }
 
     T& operator[](unsigned int idx)
+    {
+        return *(T*)(&BaseArray::operator [](idx*sizeof(T)));
+    }
+
+    const T& operator[](unsigned int idx) const
     {
         return *(T*)(&BaseArray::operator [](idx*sizeof(T)));
     }
