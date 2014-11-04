@@ -14,6 +14,7 @@ protected:
     char* pEnd;
 public:
     BaseArray(unsigned int size);
+    BaseArray(char* begin, char* end);
     ~BaseArray();
 
     char& operator[](unsigned int idx);
@@ -35,7 +36,11 @@ public:
     Array(unsigned int size)
         : BaseArray(sizeof(T)*size)
     {
+    }
 
+    Array(T* begin, T* end)
+        : BaseArray((char*)begin, (char*)end)
+    {
     }
 
     T& operator[](unsigned int idx)

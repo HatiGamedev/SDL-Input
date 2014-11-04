@@ -29,7 +29,8 @@ TEST(InputDevice, UnmappedDefaults)
     ASSERT_EQ(true, device.isUp(EInputAction::Down));
 }
 
-#include "../array.h"
+#include "tests_util.h"
+
 TEST(SDLIBaseArray, Util)
 {
     auto array = sdli::util::BaseArray(100);
@@ -37,6 +38,7 @@ TEST(SDLIBaseArray, Util)
     ASSERT_EQ(1, array[0]);
     ASSERT_EQ(1, *array.begin());
 }
+
 struct DataType
 {
     int idx;
@@ -71,7 +73,6 @@ TEST(SDLIArray, Util)
         ASSERT_EQ(true, it->flag);
     }
 }
-
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);

@@ -8,7 +8,7 @@
 #include <map>
 
 #include "sdli_definitions.h"
-#include "array.h"
+#include "util/array.h"
 
 namespace sdli {
 

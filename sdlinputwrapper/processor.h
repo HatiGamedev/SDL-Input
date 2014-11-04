@@ -23,6 +23,8 @@ class Processor
     sdli::Device keyboardDevice;
     std::map<Sint32, std::unique_ptr<sdli::Device>> gamecontrollerDevices; /// TODO: using array to access devices
 
+
+
 private:
     void addController(Sint32 controllerId);
     sdli::Device& getControllerDevice(Sint32 controllerId);

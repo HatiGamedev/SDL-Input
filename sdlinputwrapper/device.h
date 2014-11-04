@@ -19,7 +19,7 @@ protected:
 public:
     Device(sdli::Interface* interface);
 
-    // Prevent copy
+    // Prevent user-copy, due to handle incoruption
     Device(const Device&) =delete;
     Device& operator=(const Device&) =delete;
 

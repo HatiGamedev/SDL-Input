@@ -11,6 +11,14 @@ BaseArray::BaseArray(unsigned int size)
     assert(size!=0);
 }
 
+BaseArray::BaseArray(char* begin, char* end)
+    : memory(begin),
+      pBegin(begin),
+      pEnd(end)
+{
+
+}
+
 BaseArray::~BaseArray()
 {
     delete [] memory;

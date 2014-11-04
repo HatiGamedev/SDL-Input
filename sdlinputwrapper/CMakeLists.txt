@@ -5,6 +5,8 @@ aux_source_directory(. SDLINPUTWRAPPER_LIB_SRC_LIST)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11") # enable C++11
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14") # enable C++14
 
+SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 
 include(FindPkgConfig)
 pkg_search_module(SDL2 REQUIRED sdl2)
@@ -14,6 +16,7 @@ INCLUDE_DIRECTORIES(
     ${SDL2_INCLUDE_DIRS}
 )
 
+add_subdirectory(util)
 
 
 OPTION(SDLI_Enable_Tests "Compiles sdli gtests" OFF)

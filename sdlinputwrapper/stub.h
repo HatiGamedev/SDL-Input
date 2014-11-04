@@ -1,11 +1,12 @@
 #ifndef STUB_H
 #define STUB_H
 
-#ifdef __clang__
-#   include <iostream>
-#   define SDLI_STUB(X) std::printf("%s:%s\n", __PRETTY_FUNCTION__, #X)
+#ifdef __llvm__
+#   define STUB(X) std::printf("[%s] %s:%s\n", __FILE__, __PRETTY_FUNCTION__, #X)
+#elif __GNUC__
+#   define STUB(X) std::printf("[%s] %s:%s\n", __FILE__, __PRETTY_FUNCTION__, #X)
 #else
-#   define SDLI_STUB(X) (void)0
+#   define STUB(X) (void)0
 #endif
 
 #endif // STUB_H
