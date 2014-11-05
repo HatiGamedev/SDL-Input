@@ -18,7 +18,7 @@ ContextId Context::id() const
 
 void Context::mapDigital(SDL_Scancode raw, InputAction a)
 {
-    keyboardKeys.emplace(std::make_pair(raw, a));
+    keyboardKeys_.emplace(std::make_pair(raw, a));
 }
 
 void Context::mapDigital(SDL_GameControllerButton raw, InputAction a)
@@ -58,12 +58,12 @@ void Context::fireCallbacks(InputAction action, CallType type) const
 
 InputAction Context::keyAction(SDL_Scancode rawScancode) const
 {
-    if(keyboardKeys.find(rawScancode) == keyboardKeys.end())
+    if(keyboardKeys_.find(rawScancode) == keyboardKeys_.end())
     {
         return sdli::INVALID_INPUT_ACTION;
     }
 
-    return keyboardKeys.at(rawScancode);
+    return keyboardKeys_.at(rawScancode);
 }
 
 InputAction Context::buttonAction(SDL_GameControllerButton rawButton) const
@@ -85,6 +85,16 @@ InputAxis Context::controllerAxis(SDL_GameControllerAxis rawAxis) const
     }
 
     return gameControllerAxes[rawAxis].axis;
+}
+
+const std::map<SDL_Scancode, InputAction>& Context::keyboardKeys() const
+{
+    return keyboardKeys_;
+}
+
+std::map<SDL_Scancode, InputAction>&Context::keyboardKeys()
+{
+    return keyboardKeys_;
 }
 
 

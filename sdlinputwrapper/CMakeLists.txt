@@ -16,8 +16,12 @@ INCLUDE_DIRECTORIES(
     ${SDL2_INCLUDE_DIRS}
 )
 
-add_subdirectory(util)
-
+#add_subdirectory(util)
+SET(SDLINPUTWRAPPER_LIB_SRC_LIST
+    ${SDLINPUTWRAPPER_LIB_SRC_LIST}
+    util/array.cpp
+    util/indexmap.cpp
+)
 
 OPTION(SDLI_Enable_Tests "Compiles sdli gtests" OFF)
 OPTION(SDLI_Enable_Samples "Compiles the sdli samples" OFF)

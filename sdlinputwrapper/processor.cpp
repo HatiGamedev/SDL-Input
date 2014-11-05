@@ -13,7 +13,6 @@ void Processor::addController(Sint32 controllerId)
     auto controller = SDL_GameControllerOpen(controllerId);
 
     printf("%i\n", SDL_GameControllerGetAttached(controller));
-//    printf("%i\n", SDL_GameControllerEventState(SDL_IGNORE)); /* prints 0 */
     printf("%i\n", SDL_GameControllerEventState(SDL_QUERY));  /* prints 0 */
 
     rawcontrollers.emplace(std::make_pair(controllerId, controller));
@@ -55,8 +54,9 @@ Device& Processor::getControllerDevice(Sint32 controllerId)
     return *gamecontrollerDevices.at(controllerId);
 }
 
-Processor::Processor()
-    : keyboard(new sdli::Interface),
+Processor::Processor(unsigned int maxContexts)
+    : contextMap(maxContexts),
+      keyboard(new sdli::Interface),
       keyboardDevice(keyboard.get())
 {
 }
@@ -65,16 +65,19 @@ Processor::Processor()
 sdli::Context* Processor::createContext(const sdli::ContextId& contextId)
 {
     /* Only one type of context allowed per processor */
-    assert(contextMap.find(contextId) == contextMap.end());
+//    assert(contextMap.find(contextId) == contextMap.end());
 
-    contextMap.emplace(std::make_pair(contextId, std::unique_ptr<sdli::Context>(new sdli::Context(contextId))));
 
-    return contextMap[contextId].get();
+//    contextMap.emplace(std::make_pair(contextId, std::unique_ptr<sdli::Context>(new sdli::Context(contextId))));
+    contextMap.emplace_at(contextId, contextId);
+
+//    return contextMap[contextId].get();
+    return &contextMap[contextId];
 }
 
-Context* Processor::getContext(const ContextId& contextId) const
+sdli::Context* Processor::getContext(const sdli::ContextId& contextId)
 {
-    return contextMap.at(contextId).get();
+    return &contextMap[contextId];
 }
 
 sdli::Device& Processor::getDevice(InputType type, Sint32 id)
@@ -82,6 +85,7 @@ sdli::Device& Processor::getDevice(InputType type, Sint32 id)
     switch(type)
     {
     case sdli::InputType::Keyboard:
+
         return keyboardDevice;
         break;
     case sdli::InputType::Gamecontroller:
@@ -133,8 +137,11 @@ void Processor::dispatch()
 
 void Processor::poll()
 {
-    STUB();
-
+//    STUB();
+    for(auto& d : devices)
+    {
+        d.poll();
+    }
 }
 
 

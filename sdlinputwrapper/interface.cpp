@@ -75,15 +75,19 @@ Interface::Interface()
 
 void Interface::poll(sdli::Context& ctx)
 {
+    unsigned int t = SDL_Scancode::SDL_NUM_SCANCODES;
+
     auto sdl_keystate = SDL_GetKeyboardState(NULL);
-//    for(auto& i : keyboardKeys)
-//    {
-//        auto state = sdl_keystate[i.first];
-//        logicDigitalData[i.second].previousStatus = logicDigitalData[i.second].currentStatus;
-//        logicDigitalData[i.second].currentStatus = state;
-//    }
 
+    auto& keymap = ctx.keyboardKeys();
 
+    for(auto& k : keymap)
+    {
+        auto state = sdl_keystate[k.first];
+        auto& data = logicDigitalData[k.second];
+        data.previousStatus = data.currentStatus;
+        data.currentStatus = state;
+    }
 }
 
 void Interface::push(InputType type, unsigned int rawInput, int value)

@@ -11,6 +11,8 @@
 #include <stack>
 #include <functional>
 
+#include "util/array.h"
+
 namespace sdli {
 
 class Interface
@@ -27,7 +29,6 @@ private:
 
     std::map<InputAction, LogicDigitalData> logicDigitalData;
     std::map<InputAxis, LogicAnalogData> logicAnalogData;
-
 
 protected:
 

@@ -20,10 +20,9 @@ class Context
         float normalizeValue{1.0f};
     };
 
-
     const sdli::ContextId contextId_;
 
-    std::map<SDL_Scancode, InputAction> keyboardKeys;
+    std::map<SDL_Scancode, InputAction> keyboardKeys_;
 
 
     std::map<SDL_GameControllerButton, InputAction> gameControllerButtons;
@@ -36,6 +35,7 @@ class Context
 public:
     Context(const sdli::ContextId& contextId);
 
+    // Uncopyable
     Context(const Context&) =delete;
     Context(Context&&) =delete;
     Context& operator=(const Context&) =delete;
@@ -54,6 +54,9 @@ public:
     InputAction keyAction(SDL_Scancode rawScancode) const;
     InputAction buttonAction(SDL_GameControllerButton rawButton) const;
     InputAxis controllerAxis(SDL_GameControllerAxis rawAxis) const;
+
+    const std::map<SDL_Scancode, InputAction>& keyboardKeys() const;
+    std::map<SDL_Scancode, InputAction>& keyboardKeys();
 };
 
 } // sdli

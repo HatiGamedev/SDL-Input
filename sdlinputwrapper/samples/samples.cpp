@@ -21,7 +21,9 @@ enum SampleContext
 {
     GameMod,
     Game,
-    Menu
+    Menu,
+
+    MAX_COUNT
 };
 
 void func()
@@ -47,7 +49,7 @@ int main(int argc, char** argv)
 
     bool sampleQuit = false;
 
-    auto inputproc = std::unique_ptr<sdli::Processor>(new sdli::Processor);
+    auto inputproc = std::unique_ptr<sdli::Processor>(new sdli::Processor(SampleContext::MAX_COUNT));
     auto& device = inputproc->getDevice(sdli::InputType::Keyboard, 0);
     auto& pad = inputproc->getDevice(sdli::InputType::Gamecontroller, 0);
 
@@ -120,9 +122,6 @@ int main(int argc, char** argv)
 
 
     SDL_Event event;
-
-
-
     while(!sampleQuit)
     {
         while(SDL_PollEvent(&event))
@@ -133,7 +132,7 @@ int main(int argc, char** argv)
                 sampleQuit = true;
                 break;
             }
-            inputproc->handleSdlEvents(event);
+//            inputproc->handleSdlEvents(event);
         }
 //        device.poll();
 //        pad.poll();
