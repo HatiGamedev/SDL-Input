@@ -132,14 +132,14 @@ int main(int argc, char** argv)
                 sampleQuit = true;
                 break;
             }
-//            inputproc->handleSdlEvents(event);
+            inputproc->handleSdlEvents(event);
         }
 //        device.poll();
 //        pad.poll();
 
         inputproc->poll();
 
-//        device.dispatch();
+        device.dispatch();
 //        pad.dispatch();
 
         SDL_GL_SwapWindow(w);
