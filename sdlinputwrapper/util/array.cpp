@@ -26,6 +26,7 @@ BaseArray::~BaseArray()
 
 char& BaseArray::operator[](unsigned int idx)
 {
+    assert(pBegin + idx < pEnd);
     return *(pBegin + idx);
 }
 

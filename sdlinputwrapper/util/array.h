@@ -30,6 +30,13 @@ public:
 template<typename T>
 class Array : BaseArray
 {
+protected:
+
+    T* memoryPtr(unsigned int idx) const
+    {
+        return (T*)(&BaseArray::operator [](idx*sizeof(T)));
+    }
+
 public:
     using Iterator = T*;
 
@@ -66,6 +73,12 @@ public:
     unsigned int size() const
     {
         return (pEnd - pBegin)/sizeof(T);
+    }
+
+    template<typename... Args>
+    void emplace_at(unsigned int idx, Args... args)
+    {
+        new (memoryPtr(idx)) T(args...);
     }
 };
 
