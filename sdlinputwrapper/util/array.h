@@ -43,6 +43,7 @@ public:
     Array(unsigned int size)
         : BaseArray(sizeof(T)*size)
     {
+
     }
 
     Array(T* begin, T* end)

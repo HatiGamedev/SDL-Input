@@ -1,5 +1,7 @@
 #include "array.h"
 #include <cassert>
+#include <cstring>
+
 namespace sdli {
 namespace util {
 
@@ -9,6 +11,7 @@ BaseArray::BaseArray(unsigned int size)
       pEnd(&memory[0]+sizeof(char)*size)
 {
     assert(size!=0);
+    std::memset(memory, 0, size);
 }
 
 BaseArray::BaseArray(char* begin, char* end)
@@ -16,7 +19,8 @@ BaseArray::BaseArray(char* begin, char* end)
       pBegin(begin),
       pEnd(end)
 {
-
+    assert(size()!=0);
+    std::memset(memory, 0, size());
 }
 
 BaseArray::~BaseArray()

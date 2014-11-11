@@ -46,7 +46,7 @@ public:
     Lambda(const Lambda&& o)
         : functionLambda(std::move(o.functionLambda)),
           rawCFunction(std::move(o.rawCFunction)),
-          executionLambda(std::move(o.executionLambda))
+          executionLambda(o.executionLambda)
     {
     }
 
@@ -74,6 +74,16 @@ public:
             return executionLambda(functionLambda, args...);
         if(rawCFunction)
             return rawCFunction(args...);
+    }
+
+    operator bool() const
+    {
+        return executionLambda != nullptr || rawCFunction != nullptr;
+    }
+
+    bool isValid() const
+    {
+        return static_cast<bool>(*this);
     }
 };
 
