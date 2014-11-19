@@ -48,7 +48,6 @@ public:
     void mapDigital(SDL_GameControllerButton rawButton, sdli::InputAction keyAction);
 
 
-
     void mapAxis(SDL_GameControllerAxis rawAxis, sdli::InputAxis axis, float normalize = 1.0f);
     void mapAxis(SDL_Scancode rawScancode, sdli::InputAxis axis, float normalize=1.0f);
     void mapAxis(SDL_GameControllerButton, sdli::InputAxis axis, float normalize=1.0f);
