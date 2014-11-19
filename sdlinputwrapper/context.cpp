@@ -26,12 +26,22 @@ void Context::mapDigital(SDL_GameControllerButton raw, InputAction a)
     gameControllerButtons.emplace(std::make_pair(raw, a));
 }
 
-void Context::mapAnalog(SDL_GameControllerAxis raw, InputAxis a, float normalize)
+void Context::mapAxis(SDL_GameControllerAxis raw, InputAxis a, float normalize)
 {
     gameControllerAxes[raw] = InputAxisMapping{};
     gameControllerAxes[raw].axis = a;
     gameControllerAxes[raw].normalizeValue = normalize;
-//    gameControllerAxes.emplace(std::make_pair(raw, InputAxisMapping{a, normalize}));
+    //    gameControllerAxes.emplace(std::make_pair(raw, InputAxisMapping{a, normalize}));
+}
+
+void Context::mapAxis(SDL_Scancode rawScancode, InputAxis axis, float normalize)
+{
+
+}
+
+void Context::mapAxis(SDL_GameControllerButton, InputAxis axis, float normalize)
+{
+
 }
 
 void Context::addCallback(InputAction action, CallType type, const Callback& callback)

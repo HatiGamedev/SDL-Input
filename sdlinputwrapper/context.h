@@ -47,10 +47,12 @@ public:
     void mapDigital(SDL_Scancode rawScancode, sdli::InputAction keyAction);
     void mapDigital(SDL_GameControllerButton rawButton, sdli::InputAction keyAction);
 
-    void mapAnalog(SDL_GameControllerAxis rawAxis, sdli::InputAxis axis, float normalize = 1.0f);
 
 
-    // void mapAxis(SDL_Scancode rawScancode, sdli::InputAxis axis, float normalize=1.0f);
+    void mapAxis(SDL_GameControllerAxis rawAxis, sdli::InputAxis axis, float normalize = 1.0f);
+    void mapAxis(SDL_Scancode rawScancode, sdli::InputAxis axis, float normalize=1.0f);
+    void mapAxis(SDL_GameControllerButton, sdli::InputAxis axis, float normalize=1.0f);
+
 
     void addCallback(sdli::InputAction action, sdli::CallType type, const sdli::Callback& callback);
     void fireCallbacks(sdli::InputAction action, sdli::CallType type) const;

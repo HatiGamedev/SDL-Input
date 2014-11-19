@@ -14,12 +14,6 @@ public:
     LinearAllocator(unsigned int size);
     LinearAllocator(char* begin, char* end);
 
-    template<typename T>
-    LinearAllocator(unsigned int max_count)
-        : BaseArray(LinearAllocator::BytesOfCount<T>(max_count)),
-          current(pBegin)
-    {}
-
     LinearAllocator(const LinearAllocator&) =delete;
     LinearAllocator(const LinearAllocator&&) =delete;
 
