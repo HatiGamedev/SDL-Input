@@ -29,17 +29,21 @@ TEST(Util, SDLIArray)
     ASSERT_EQ(1.0f, array[1].value);
     ASSERT_EQ(false, array[2].flag);
 
+    auto i=0;
     for(auto it = array.begin(); it!=array.end(); ++it)
     {
-        it->idx = 0;
+        it->idx = i;
         it->value = 10.0f;
         it->flag = true;
+        ++i;
     }
 
+    i=0;
     for(auto it = array.begin(); it!=array.end(); ++it)
     {
-        ASSERT_EQ(0, it->idx);
+        ASSERT_EQ(i, it->idx);
         ASSERT_EQ(10.0f, it->value);
         ASSERT_EQ(true, it->flag);
+        ++i;
     }
 }
