@@ -66,12 +66,8 @@ sdli::Context* Processor::createContext(const sdli::ContextId& contextId)
 {
     /* Only one type of context allowed per processor */
 //    assert(contextMap.find(contextId) == contextMap.end());
-
-
-//    contextMap.emplace(std::make_pair(contextId, std::unique_ptr<sdli::Context>(new sdli::Context(contextId))));
     contextMap.emplace_at(contextId, contextId);
 
-//    return contextMap[contextId].get();
     return &contextMap[contextId];
 }
 
@@ -137,7 +133,6 @@ void Processor::dispatch()
 
 void Processor::poll()
 {
-//    STUB();
     for(auto& d : devices)
     {
         d.poll();

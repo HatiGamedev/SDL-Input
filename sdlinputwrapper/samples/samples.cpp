@@ -50,6 +50,7 @@ int main(int argc, char** argv)
     bool sampleQuit = false;
 
     auto inputproc = std::unique_ptr<sdli::Processor>(new sdli::Processor(SampleContext::MAX_COUNT));
+
     auto& device = inputproc->getDevice(sdli::InputType::Keyboard, 0);
     auto& pad = inputproc->getDevice(sdli::InputType::Gamecontroller, 0);
 
@@ -59,7 +60,6 @@ int main(int argc, char** argv)
     auto ctx2 = inputproc->createContext(SampleContext::Game);
 
     ctx1->mapDigital(SDL_SCANCODE_S, SampleInputActions::SampleDown);
-
     ctx2->mapDigital(SDL_SCANCODE_S, SampleInputActions::SampleDown);
 
     ctx1->mapDigital(SDL_SCANCODE_F1, SampleInputActions::CHANGE_CTX);
@@ -141,6 +141,8 @@ int main(int argc, char** argv)
 
         device.dispatch();
 //        pad.dispatch();
+
+
 
         SDL_GL_SwapWindow(w);
     }
