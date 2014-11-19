@@ -12,14 +12,14 @@
 
 namespace sdli {
 
+struct InputAxisMapping
+{
+    InputAxis axis{-1u};
+    float normalizeValue{1.0f};
+};
+
 class Context
 {
-    struct InputAxisMapping
-    {
-        InputAxis axis{-1u};
-        float normalizeValue{1.0f};
-    };
-
     const sdli::ContextId contextId_;
 
     std::map<SDL_Scancode, InputAction> keyboardKeys_;
@@ -34,6 +34,7 @@ class Context
 
 public:
     Context(const sdli::ContextId& contextId);
+    ~Context() {}
 
     // Uncopyable
     Context(const Context&) =delete;
@@ -47,6 +48,9 @@ public:
     void mapDigital(SDL_GameControllerButton rawButton, sdli::InputAction keyAction);
 
     void mapAnalog(SDL_GameControllerAxis rawAxis, sdli::InputAxis axis, float normalize = 1.0f);
+
+
+    // void mapAxis(SDL_Scancode rawScancode, sdli::InputAxis axis, float normalize=1.0f);
 
     void addCallback(sdli::InputAction action, sdli::CallType type, const sdli::Callback& callback);
     void fireCallbacks(sdli::InputAction action, sdli::CallType type) const;

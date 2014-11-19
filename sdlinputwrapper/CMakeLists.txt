@@ -20,6 +20,7 @@ INCLUDE_DIRECTORIES(
 SET(SDLINPUTWRAPPER_LIB_SRC_LIST
     ${SDLINPUTWRAPPER_LIB_SRC_LIST}
     util/array.cpp
+    util/linearallocator.cpp
     util/indexmap.cpp
 )
 

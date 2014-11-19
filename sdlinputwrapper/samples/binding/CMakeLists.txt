@@ -5,8 +5,6 @@ aux_source_directory(. SDLINPUTWRAPPER_SAMPLES_SRC_LIST)
 include(FindPkgConfig)
 pkg_search_module(SDL2 REQUIRED sdl2)
 
-MESSAGE(${SDLIW_INCLUDES})
-
 INCLUDE_DIRECTORIES(
     ${SDL2_INCLUDE_DIRS}
     ${SDLIW_INCLUDES}

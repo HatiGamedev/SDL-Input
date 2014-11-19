@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "../util/array.h"
+#include "../util/linearallocator.h"
 
 TEST(Util, SDLIBaseArray)
 {
@@ -11,9 +12,9 @@ TEST(Util, SDLIBaseArray)
 
 struct DataType
 {
-    int idx;
-    float value;
-    bool flag;
+    int idx{0};
+    float value{1.0f};
+    bool flag{false};
 };
 
 TEST(Util, SDLIArray)
@@ -46,4 +47,14 @@ TEST(Util, SDLIArray)
         ASSERT_EQ(true, it->flag);
         ++i;
     }
+}
+
+TEST(Util, SDLILinearAllocator)
+{
+    sdli::util::LinearAllocator allocator{100};
+    DataType* data = new (allocator.allocate<DataType>()) DataType;
+
+    ASSERT_EQ(DataType{}.idx, data->idx);
+    ASSERT_EQ(DataType{}.value, data->value);
+    ASSERT_EQ(DataType{}.flag, data->flag);
 }

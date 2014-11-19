@@ -109,9 +109,7 @@ int main(int argc, char** argv)
     {
         std::cout << " World" << std::endl;
     });
-
     /** END Mappings **/
-
 
     SDL_Window* w = SDL_CreateWindow("SampleWindow", 0, 0, 256, 256, SDL_WindowFlags::SDL_WINDOW_SHOWN|SDL_WindowFlags::SDL_WINDOW_OPENGL);
 
@@ -149,5 +147,6 @@ int main(int argc, char** argv)
 
     SDL_GL_DeleteContext(sdl_glContext);
     SDL_DestroyWindow(w);
+
     return 0;
 }

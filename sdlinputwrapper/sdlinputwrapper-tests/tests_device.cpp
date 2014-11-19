@@ -4,13 +4,14 @@
 
 enum EInputContext
 {
-    isPressedContext
+    ModShiftContext
 };
 
 TEST(InputDevice, defaults)
 {
-    sdli::Interface device;
-    std::unique_ptr<sdli::Context> ctx(new sdli::Context(EInputContext::isPressedContext));
+//    sdli::Interface device;
+    auto processor = std::unique_ptr<sdli::Processor>(new sdli::Processor(2));
+    processor->createContext(EInputContext::ModShiftContext);
 
 }
 
