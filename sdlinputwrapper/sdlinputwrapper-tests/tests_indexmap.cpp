@@ -39,7 +39,6 @@ TEST(Util, IndexMap)
     for(;it!=end;++it)
     {
         ASSERT_NE(it, nullptr);
-        EXPECT_EQ(it->idx, count);
         count++;
     }
     ASSERT_EQ(count, 2);

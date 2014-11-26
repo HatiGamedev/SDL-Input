@@ -102,6 +102,29 @@ public:
         indices.reset();
         data.reset();
     }
+
+    void move(IdxType currentIdx, IdxType newIdx)
+    {
+        assert(at(currentIdx)!=nullptr); // must be in
+        assert(at(newIdx)==nullptr); // must not be in
+
+        auto it = indices.begin<Index>();
+        auto end = indices.end<Index>();
+        for(;it!=end;++it)
+        {
+            if(it->idx == currentIdx)
+            {
+                it->idx = newIdx;
+                break;
+            }
+        }
+
+    }
+
+    static constexpr unsigned int BytesOfIndexMap(unsigned int size)
+    {
+        return LinearAllocator::BytesOfCount<Index>(size)+LinearAllocator::BytesOfCount<T>(size);
+    }
 };
 
 } // util

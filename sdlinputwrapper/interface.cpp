@@ -104,9 +104,9 @@ void Interface::poll(sdli::Context& ctx)
     for(;it!=keymap.end();++it)
     {
         auto state = sdl_keystate[it->idx];
-        auto& data = logicDigitalData[*(it->data)];
-        data.previousStatus = data.currentStatus;
-        data.currentStatus = state;
+//        auto& data = logicDigitalData[*(it->data)];
+//        data.previousStatus = data.currentStatus;
+//        data.currentStatus = state;
     }
 }
 
@@ -124,10 +124,10 @@ void Interface::push(InputType type, unsigned int rawInput, int value)
 //TODO: evaluate isPressed correctly - detect changes over multiple samples
 void Interface::dispatch(sdli::Context& ctx)
 {
-    for(auto& i : logicDigitalData)
-    {
-        i.second.previousStatus = i.second.currentStatus;
-    }
+//    for(auto& i : logicDigitalData)
+//    {
+//        i.second.previousStatus = i.second.currentStatus;
+//    }
 
     for(auto& d : perFrameCaptures)
     {
@@ -162,50 +162,42 @@ float Interface::getRange(InputAxis axis)
 
 bool Interface::isPressed(InputAction action)
 {
-    if(logicDigitalData.find(action) == logicDigitalData.end())
+    if(captureBuffer.at(action) == nullptr)
     {
         return ::sdli::IS_PRESSED_UNDEFINED;
     }
 
-    auto& l = logicDigitalData[action];
-
-    return ::sdli::isPressed(l);
+    return ::sdli::isPressed(captureBuffer.get(action));
 }
 
 bool Interface::isReleased(InputAction action)
 {
-    if(logicDigitalData.find(action) == logicDigitalData.end())
+    if(captureBuffer.at(action) == nullptr)
     {
         return ::sdli::IS_RELEASED_UNDEFINED;
     }
 
-    auto& l = logicDigitalData[action];
-
-    return ::sdli::isReleased(l);
+    return ::sdli::isReleased(captureBuffer.get(action));
 }
 
 bool Interface::isDown(InputAction action)
 {
-    if(logicDigitalData.find(action) == logicDigitalData.end())
+    if(captureBuffer.at(action) == nullptr)
     {
         return ::sdli::IS_DOWN_UNDEFINED;
     }
 
-    auto& l = logicDigitalData[action];
-
-    return ::sdli::isDown(l);
+    return ::sdli::isDown(captureBuffer.get(action));
 }
 
 bool Interface::isUp(InputAction action)
 {
-    if(logicDigitalData.find(action) == logicDigitalData.end())
+    if(captureBuffer.at(action) == nullptr)
     {
         return ::sdli::IS_UP_UNDEFINED;
     }
 
-    auto& l = logicDigitalData[action];
-
-    return ::sdli::isUp(l);
+    return ::sdli::isUp(captureBuffer.get(action));
 }
 
 void Interface::swap()

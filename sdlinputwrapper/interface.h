@@ -28,7 +28,6 @@ private:
 
     std::vector<RawInputData> perFrameCaptures;
 
-    std::map<InputAction, LogicDigitalData> logicDigitalData;
     std::map<InputAxis, LogicAnalogData> logicAnalogData;
 
     sdli::util::IndexMap<InputAction, LogicDigitalData> captureBuffer;
