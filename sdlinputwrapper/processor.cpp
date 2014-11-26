@@ -128,7 +128,10 @@ void Processor::handleSdlEvents(const SDL_Event& e)
 
 void Processor::dispatch()
 {
-    STUB();
+    for(auto& d : devices)
+    {
+        d.dispatch();
+    }
 }
 
 void Processor::poll()
@@ -136,6 +139,14 @@ void Processor::poll()
     for(auto& d : devices)
     {
         d.poll();
+    }
+}
+
+void Processor::swap()
+{
+    for(auto& d : devices)
+    {
+        d.swap();
     }
 }
 

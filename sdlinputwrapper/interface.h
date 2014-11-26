@@ -12,6 +12,7 @@
 #include <functional>
 
 #include "util/array.h"
+#include "util/indexmap.h"
 
 namespace sdli {
 
@@ -29,6 +30,8 @@ private:
 
     std::map<InputAction, LogicDigitalData> logicDigitalData;
     std::map<InputAxis, LogicAnalogData> logicAnalogData;
+
+    sdli::util::IndexMap<InputAction, LogicDigitalData> captureBuffer;
 
 protected:
 
@@ -52,6 +55,8 @@ public:
     bool isReleased(InputAction action);
     bool isDown(InputAction action);
     bool isUp(InputAction action);
+
+    void swap();
 
 };
 

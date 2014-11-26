@@ -37,6 +37,8 @@ public:
     bool isReleased(InputAction action);
     bool isDown(InputAction action);
     bool isUp(InputAction action);
+
+    void swap();
 };
 
 } // sdli

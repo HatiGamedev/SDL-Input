@@ -40,7 +40,7 @@ class Context
 
     const sdli::ContextId contextId_;
 
-    sdli::util::IndexMap<SDL_Scancode, InputAction> keyboardKeys;
+    sdli::util::IndexMap<SDL_Scancode, InputAction> keyboardKeys_;
 
     std::map<SDL_GameControllerButton, InputAction> gameControllerButtons;
 
@@ -76,6 +76,7 @@ public:
 
     void fireCallbacks(sdli::InputAction action, sdli::CallType callType) const;
 
+    const sdli::util::IndexMap<SDL_Scancode, InputAction>& keyboardKeys() const;
 
 };
 

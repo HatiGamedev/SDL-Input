@@ -1,5 +1,6 @@
 #include "linearallocator.h"
 #include <cassert>
+#include <cstring>
 
 namespace sdli {
 namespace util {
@@ -28,6 +29,7 @@ void* LinearAllocator::allocate(unsigned int size)
 
 void LinearAllocator::reset()
 {
+    memset(BaseArray::pBegin, 0, BaseArray::size());
     current = BaseArray::pBegin;
 }
 

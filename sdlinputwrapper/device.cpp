@@ -48,23 +48,18 @@ Context* Device::popContext()
 void Device::poll()
 {
     _DEVICE_GUARD_(interface, ;);
-//    _DEVICE_GUARD_(contextStack_.top(), ;);
-
     interface->poll(*contextStack_.top());
 }
 
 void Device::pollAxes()
 {
     _DEVICE_GUARD_(interface, ;);
-
     interface->pollAxes(*contextStack_.top());
 }
 
 void Device::dispatch()
 {
     _DEVICE_GUARD_(interface, ;);
-//    _DEVICE_GUARD_(contextStack_.top(), ;);
-
     interface->dispatch(*contextStack_.top());
 }
 
@@ -96,6 +91,12 @@ bool Device::isUp(InputAction action)
 {
     _DEVICE_GUARD_(interface, ::sdli::IS_UP_UNDEFINED);
     return interface->isUp(action);
+}
+
+void Device::swap()
+{
+    _DEVICE_GUARD_(interface,;);
+    interface->swap();
 }
 
 } // sdli

@@ -86,6 +86,22 @@ public:
     {
         return indices.end<Index>();
     }
+
+    T* dataBegin()
+    {
+        return data.begin<T>();
+    }
+
+    T* dataEnd()
+    {
+        return data.end<T>();
+    }
+
+    void clear()
+    {
+        indices.reset();
+        data.reset();
+    }
 };
 
 } // util

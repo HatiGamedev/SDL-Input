@@ -1,5 +1,6 @@
 #include "interface.h"
 #include "context.h"
+#include <iostream>
 
 namespace sdli {
 
@@ -27,12 +28,10 @@ bool isUp(const LogicDigitalData& d)
 
 void Interface::handleKeyboard(const sdli::Context& ctx, const Interface::RawInputData& raw)
 {
-//    auto& ctx = this->contextStack_.top();
-
+    /*
     auto inputAction = ctx.keyAction(static_cast<SDL_Scancode>(raw.rawInput));
     auto& logic = logicDigitalData[inputAction];
 
-//    logic.previousStatus = logic.currentStatus;
     logic.currentStatus = raw.pollResult;
 
     if(::sdli::isPressed(logic))
@@ -44,6 +43,27 @@ void Interface::handleKeyboard(const sdli::Context& ctx, const Interface::RawInp
     {
         ctx.fireCallbacks(inputAction, sdli::CallType::OnRelease);
         return;
+    }
+    */
+
+    auto inputAction = ctx.keyAction(static_cast<SDL_Scancode>(raw.rawInput));
+    if(captureBuffer.at(inputAction) == nullptr)
+    {
+        captureBuffer.emplace(inputAction);
+    }
+    auto& logic = captureBuffer.get(inputAction);
+
+    logic.currentStatus = raw.pollResult;
+//    sdli::data::push(logic.current, raw.pollResult);
+
+    if(::sdli::isPressed(logic))
+    {
+        ctx.fireCallbacks(inputAction, sdli::CallType::OnPress);
+    }
+
+    if(::sdli::isReleased(logic))
+    {
+        ctx.fireCallbacks(inputAction, sdli::CallType::OnRelease);
     }
 
 }
@@ -70,24 +90,24 @@ void Interface::handleGamecontroller(const sdli::Context& ctx, const Interface::
 }
 
 Interface::Interface()
+    : captureBuffer(10) ///TODO: replace by inputaction count of processor
 {
 }
 
 void Interface::poll(sdli::Context& ctx)
 {
-    unsigned int t = SDL_Scancode::SDL_NUM_SCANCODES;
-
     auto sdl_keystate = SDL_GetKeyboardState(NULL);
 
-    STUB(auto& keymap = ctx.keyboardKeys();
+    auto& keymap = ctx.keyboardKeys();
 
-    for(auto& k : keymap)
+    auto it = keymap.begin();
+    for(;it!=keymap.end();++it)
     {
-        auto state = sdl_keystate[k.first];
-        auto& data = logicDigitalData[k.second];
+        auto state = sdl_keystate[it->idx];
+        auto& data = logicDigitalData[*(it->data)];
         data.previousStatus = data.currentStatus;
         data.currentStatus = state;
-    });
+    }
 }
 
 void Interface::pollAxes(Context& ctx)
@@ -97,6 +117,7 @@ void Interface::pollAxes(Context& ctx)
 
 void Interface::push(InputType type, unsigned int rawInput, int value)
 {
+    ///TODO: buffer resize properly
     perFrameCaptures.emplace_back(RawInputData{type, rawInput, value});
 }
 
@@ -114,10 +135,12 @@ void Interface::dispatch(sdli::Context& ctx)
         {
         case InputType::Keyboard:
             handleKeyboard(ctx, d);
+
+
             break;
 
         case InputType::Gamecontroller:
-            handleGamecontroller(ctx, d);
+            STUB(handleGamecontroller(ctx, d););
             break;
         default:
             break;
@@ -183,6 +206,16 @@ bool Interface::isUp(InputAction action)
     auto& l = logicDigitalData[action];
 
     return ::sdli::isUp(l);
+}
+
+void Interface::swap()
+{
+    auto it = captureBuffer.dataBegin();
+    auto end = captureBuffer.dataEnd();
+    for(;it!=end;++it)
+    {
+        it->previousStatus = it->currentStatus;
+    }
 }
 
 }

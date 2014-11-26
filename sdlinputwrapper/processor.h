@@ -46,6 +46,8 @@ public:
     void dispatch();
     void poll();
 
+    void swap();
+
 
 };
 

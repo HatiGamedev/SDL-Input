@@ -120,16 +120,14 @@ int main(int argc, char** argv)
             }
             inputproc->handleSdlEvents(event);
         }
-//        device.poll();
-//        pad.poll();
 
-        inputproc->poll();
+//        inputproc->poll();
+//        inputproc->dispatch();
 
         device.dispatch();
-//        pad.dispatch();
 
 
-
+        device.swap();
         SDL_GL_SwapWindow(w);
     }
 
