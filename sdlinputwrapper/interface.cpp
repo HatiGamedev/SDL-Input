@@ -28,24 +28,6 @@ bool isUp(const LogicDigitalData& d)
 
 void Interface::handleKeyboard(const sdli::Context& ctx, const Interface::RawInputData& raw)
 {
-    /*
-    auto inputAction = ctx.keyAction(static_cast<SDL_Scancode>(raw.rawInput));
-    auto& logic = logicDigitalData[inputAction];
-
-    logic.currentStatus = raw.pollResult;
-
-    if(::sdli::isPressed(logic))
-    {
-        ctx.fireCallbacks(inputAction, sdli::CallType::OnPress);
-        return;
-    }
-    if(::sdli::isReleased(logic))
-    {
-        ctx.fireCallbacks(inputAction, sdli::CallType::OnRelease);
-        return;
-    }
-    */
-
     auto inputAction = ctx.keyAction(static_cast<SDL_Scancode>(raw.rawInput));
     if(captureBuffer.at(inputAction) == nullptr)
     {
@@ -54,7 +36,6 @@ void Interface::handleKeyboard(const sdli::Context& ctx, const Interface::RawInp
     auto& logic = captureBuffer.get(inputAction);
 
     logic.currentStatus = raw.pollResult;
-//    sdli::data::push(logic.current, raw.pollResult);
 
     if(::sdli::isPressed(logic))
     {
@@ -70,8 +51,6 @@ void Interface::handleKeyboard(const sdli::Context& ctx, const Interface::RawInp
 
 void Interface::handleGamecontroller(const sdli::Context& ctx, const Interface::RawInputData& raw)
 {
-//    auto& ctx = this->contextStack_.top();
-
     STUB(auto inputAction = ctx.buttonAction(static_cast<SDL_GameControllerButton>(raw.rawInput));
     auto& logic = logicDigitalData[inputAction];
 

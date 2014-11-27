@@ -12,12 +12,15 @@ void Processor::addController(Sint32 controllerId)
 {
     auto controller = SDL_GameControllerOpen(controllerId);
 
-    printf("%i\n", SDL_GameControllerGetAttached(controller));
-    printf("%i\n", SDL_GameControllerEventState(SDL_QUERY));  /* prints 0 */
+    printf("attached: %i\n", SDL_GameControllerGetAttached(controller));
+    printf("evenstate: %i\n", SDL_GameControllerEventState(SDL_QUERY));  /* prints 0 */
 
-    rawcontrollers.emplace(std::make_pair(controllerId, controller));
+    unsigned int instanceId = SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(controller));
+    printf("joystick-id: %u\n", instanceId);
 
-    if(gamecontrollers.find(controllerId)==gamecontrollers.end())
+    rawcontrollers.emplace(std::make_pair(instanceId, controller));
+
+    if(gamecontrollers.find(instanceId)==gamecontrollers.end())
     {
         std::cout << "creating new interface .." << std::endl;
         gamecontrollers.emplace(std::make_pair(controllerId, std::unique_ptr<sdli::Interface>(new sdli::Interface)));
@@ -103,15 +106,14 @@ void Processor::handleSdlEvents(const SDL_Event& e)
         keyboard->push(InputType::Keyboard, e.key.keysym.scancode, e.key.state);
         break;
     case SDL_CONTROLLERDEVICEADDED:
-        std::cout << "Controller added " << ":" << e.cdevice.which << std::endl;
+        printf("Controller added: %u\n", e.cdevice.which);
         addController(e.cdevice.which);
         break;
     case SDL_CONTROLLERDEVICEREMOVED:
-        std::cout << "Controller removed " << ":" << e.cdevice.which << std::endl;
-//        SDL_GameControllerClose(rawcontrollers.at(e.cdevice.which));
+        printf("Controller removed: %u\n", e.cdevice.which);
         break;
     case SDL_CONTROLLERBUTTONDOWN:
-        std::cout << "test:" << e.cbutton.which << std::endl;
+        printf("Controller button-down: %u\n", e.cdevice.which);
         if(gamecontrollers.find(e.cbutton.which)!=gamecontrollers.end())
         {
             gamecontrollers.at(e.cbutton.which)->push(InputType::Gamecontroller, e.cbutton.button, e.cbutton.state);
