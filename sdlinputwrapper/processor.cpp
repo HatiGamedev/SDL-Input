@@ -20,12 +20,12 @@ void Processor::addController(Sint32 controllerId)
     if(hardwareToJoystickId.at(controllerId)==nullptr)
     {
         hardwareToJoystickId.emplace(controllerId, joystickId);
-        printf("link %d:%d", controllerId, joystickId);
+        printf("link %d:%d\n", controllerId, joystickId);
     }
     else
     {
         hardwareToJoystickId.get(controllerId) = joystickId;
-        printf("relink %d:%d", controllerId, joystickId);
+        printf("relink %d:%d\n", controllerId, joystickId);
     }
 
     if(gamecontrollers.at(joystickId)==nullptr)
@@ -37,7 +37,7 @@ void Processor::addController(Sint32 controllerId)
     {
         std::cout << "recycle old interface" <<std::endl;
     }
-//    getControllerDevice(controllerId);
+    getControllerDevice(controllerId);
 
 }
 
