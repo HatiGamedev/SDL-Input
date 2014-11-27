@@ -84,7 +84,6 @@ sdli::Device& Processor::getDevice(InputType type, Sint32 id)
     switch(type)
     {
     case sdli::InputType::Keyboard:
-
         return keyboardDevice;
         break;
     case sdli::InputType::Gamecontroller:

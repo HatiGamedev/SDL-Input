@@ -6,6 +6,7 @@ namespace sdli
 Context::Context(const ContextId& contextId)
     : contextId_(contextId),
       keyboardKeys_(128), ///TODO: make variable
+      gameControllerButtons(SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_MAX),
       //gameControllerAxes(SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_MAX)
       axisMapping(12) ///TODO: make
 {
@@ -34,7 +35,7 @@ void Context::mapButton(SDL_Scancode rawKey, InputAction action)
 
 void Context::mapButton(SDL_GameControllerButton rawButton, InputAction action)
 {
-    STUB();
+    gameControllerButtons.emplace(rawButton, action);
 }
 
 void Context::addCallback(CallType eventType, InputAction action, const Callback& callback)
@@ -45,6 +46,16 @@ void Context::addCallback(CallType eventType, InputAction action, const Callback
 InputAction Context::keyAction(SDL_Scancode raw) const
 {
     auto action = keyboardKeys_.at(raw);
+    if(action == nullptr)
+    {
+        return sdli::INVALID_INPUT_ACTION;
+    }
+    return *action;
+}
+
+InputAction Context::keyAction(SDL_GameControllerButton raw) const
+{
+    auto action = gameControllerButtons.at(raw);
     if(action == nullptr)
     {
         return sdli::INVALID_INPUT_ACTION;

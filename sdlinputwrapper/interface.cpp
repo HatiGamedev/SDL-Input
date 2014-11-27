@@ -51,8 +51,13 @@ void Interface::handleKeyboard(const sdli::Context& ctx, const Interface::RawInp
 
 void Interface::handleGamecontroller(const sdli::Context& ctx, const Interface::RawInputData& raw)
 {
-    STUB(auto inputAction = ctx.buttonAction(static_cast<SDL_GameControllerButton>(raw.rawInput));
-    auto& logic = logicDigitalData[inputAction];
+    auto inputAction = ctx.keyAction(static_cast<SDL_GameControllerButton>(raw.rawInput));
+    if(captureBuffer.at(inputAction) == nullptr)
+    {
+        captureBuffer.emplace(inputAction);
+    }
+
+    auto& logic = captureBuffer.get(inputAction);
 
     logic.currentStatus = raw.pollResult;
 
@@ -64,12 +69,13 @@ void Interface::handleGamecontroller(const sdli::Context& ctx, const Interface::
     if(::sdli::isReleased(logic))
     {
         ctx.fireCallbacks(inputAction, sdli::CallType::OnRelease);
-    });
+    }
 
 }
 
 Interface::Interface()
-    : captureBuffer(10) ///TODO: replace by inputaction count of processor
+    : captureBuffer(10), ///TODO: replace by inputaction count of processor
+      currentState(10)
 {
 }
 
@@ -103,23 +109,15 @@ void Interface::push(InputType type, unsigned int rawInput, int value)
 //TODO: evaluate isPressed correctly - detect changes over multiple samples
 void Interface::dispatch(sdli::Context& ctx)
 {
-//    for(auto& i : logicDigitalData)
-//    {
-//        i.second.previousStatus = i.second.currentStatus;
-//    }
-
     for(auto& d : perFrameCaptures)
     {
         switch(d.type)
         {
         case InputType::Keyboard:
             handleKeyboard(ctx, d);
-
-
             break;
-
         case InputType::Gamecontroller:
-            STUB(handleGamecontroller(ctx, d););
+            handleGamecontroller(ctx, d);
             break;
         default:
             break;

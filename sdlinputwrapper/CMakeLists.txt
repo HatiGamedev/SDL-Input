@@ -26,6 +26,7 @@ SET(SDLINPUTWRAPPER_LIB_SRC_LIST
     util/linearallocator.cpp
 
     # data
+    data/framestate.cpp
     data/sdli_axis.cpp
 )
 
@@ -40,7 +41,6 @@ IF(SDLI_Enable_Samples)
     add_subdirectory(samples)
 ENDIF()
 
-#add_executable(${PROJECT_NAME} ${SDLINPUTWRAPPER_LIB_SRC_LIST})
 add_library(${PROJECT_NAME} ${SDLINPUTWRAPPER_LIB_SRC_LIST})
 target_link_libraries(${PROJECT_NAME}
     ${SDL2_LIBRARIES}

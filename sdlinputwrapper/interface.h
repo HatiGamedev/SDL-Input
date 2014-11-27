@@ -11,6 +11,7 @@
 #include <stack>
 #include <functional>
 
+#include "data/framestate.cpp"
 #include "util/array.h"
 #include "util/indexmap.h"
 
@@ -31,6 +32,7 @@ private:
     std::map<InputAxis, LogicAnalogData> logicAnalogData;
 
     sdli::util::IndexMap<InputAction, LogicDigitalData> captureBuffer;
+    sdli::util::IndexMap<InputAction, sdli::data::ActionState> currentState; 
 
 protected:
 
@@ -56,7 +58,6 @@ public:
     bool isUp(InputAction action);
 
     void swap();
-
 };
 
 } // sdli

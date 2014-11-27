@@ -61,7 +61,7 @@ int main(int argc, char** argv)
 
     auto l = []()
     {
-        std::cout << "Hello";
+        printf("Hello");
     };
     ctx1->addCallback(sdli::CallType::OnPress, SampleInputActions::SampleDown, l);
 
@@ -72,7 +72,7 @@ int main(int argc, char** argv)
 
         pad.popContext();
         pad.pushContext(ctx2);
-        std::cout << "swap to ctx2 while hold" << std::endl;
+        printf("swap to ctx2 while hold\n");
     };
 
     ctx2->addCallback(sdli::CallType::OnPress, SampleInputActions::GAME_QUIT, [&sampleQuit](){
@@ -88,12 +88,12 @@ int main(int argc, char** argv)
 
         pad.popContext();
         pad.pushContext(ctx1);
-        std::cout << "change back to ctx1 - released" << std::endl;
+        printf("change back to ctx1 - released\n");
     });
 
     ctx1->addCallback(sdli::CallType::OnRelease, SampleInputActions::SampleDown, []()
     {
-        std::cout << " World" << std::endl;
+        printf(" World\n");
     });
 
     /** END Mappings **/
@@ -124,10 +124,10 @@ int main(int argc, char** argv)
 //        inputproc->poll();
 //        inputproc->dispatch();
 
-        device.dispatch();
+        pad.dispatch();
 
 
-        device.swap();
+        pad.swap();
         SDL_GL_SwapWindow(w);
     }
 
