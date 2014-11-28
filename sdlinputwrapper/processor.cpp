@@ -46,13 +46,16 @@ Device& Processor::getControllerDevice(Sint32 hardwareId)
     if(gamecontrollerDevices.at(hardwareId) == nullptr) // non existend -> emplace
     {
         gamecontrollerDevices.emplace(hardwareId, new sdli::Device(nullptr)); // create unlinked device
+        devices.push_back(&(*gamecontrollerDevices.get(hardwareId)));
     }
     else
     {
         gamecontrollerDevices.get(hardwareId)->setInterface(gamecontrollers.get(hardwareToJoystickId.get(hardwareId)).get());
+
     }
 
     auto& t = *gamecontrollerDevices.get(hardwareId);
+
     return t;
 }
 
@@ -64,6 +67,7 @@ Processor::Processor(unsigned int maxContexts)
       keyboardDevice(keyboard.get()),
       gamecontrollerDevices(10)
 {
+    devices.push_back(&keyboardDevice);
 }
 
 
@@ -104,6 +108,7 @@ void Processor::handleSdlEvents(const SDL_Event& e)
     {
     case SDL_KEYDOWN:
     case SDL_KEYUP:
+//        printf("Key-input: %d : %d", e.key.keysym.scancode, e.key.state);
         keyboard->push(InputType::Keyboard, e.key.keysym.scancode, e.key.state);
         break;
     case SDL_CONTROLLERDEVICEADDED:
@@ -133,7 +138,7 @@ void Processor::dispatch()
 {
     for(auto& d : devices)
     {
-        d.dispatch();
+        d->dispatch();
     }
 }
 
@@ -141,7 +146,7 @@ void Processor::poll()
 {
     for(auto& d : devices)
     {
-        d.poll();
+        d->poll();
     }
 }
 
@@ -149,7 +154,7 @@ void Processor::swap()
 {
     for(auto& d : devices)
     {
-        d.swap();
+        d->swap();
     }
 }
 

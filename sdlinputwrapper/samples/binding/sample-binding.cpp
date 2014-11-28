@@ -122,12 +122,14 @@ int main(int argc, char** argv)
         }
 
 //        inputproc->poll();
-//        inputproc->dispatch();
 
-        pad.dispatch();
+//        pad.dispatch();
 
 
-        pad.swap();
+        inputproc->dispatch();
+        inputproc->swap();
+
+//        pad.swap();
         SDL_GL_SwapWindow(w);
     }
 

@@ -97,7 +97,6 @@ void Interface::poll(sdli::Context& ctx)
 
 void Interface::pollAxes(Context& ctx)
 {
-
 }
 
 void Interface::push(InputType type, unsigned int rawInput, int value)

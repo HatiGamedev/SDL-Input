@@ -29,7 +29,7 @@ class Processor
 
     sdli::util::IndexMap<Sint32, std::unique_ptr<sdli::Device>> gamecontrollerDevices;
 
-    std::vector<sdli::Device> devices;
+    std::vector<sdli::Device*> devices;
 
 private:
     void addController(Sint32 controllerId);
