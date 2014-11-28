@@ -7,6 +7,8 @@ struct Data
     short state{-1};
 };
 
+
+
 TEST(Util, IndexMap)
 {
     sdli::util::IndexMap<unsigned int, Data> map(10);
@@ -42,5 +44,28 @@ TEST(Util, IndexMap)
         count++;
     }
     ASSERT_EQ(count, 2);
+
+}
+
+TEST(Util, IndexMapMax)
+{
+    const unsigned int count = 10;
+
+    sdli::util::IndexMap<unsigned int, Data> map(count);
+
+    for(int i=0;i<count;++i)
+    {
+        map.emplace(i);
+        auto& d = map.get(i);
+        d.x = 1.0f*i;
+        d.y = 0.5f*i;
+        d.state = 10 * i;
+    }
+
+    for(int i=0;i<count;++i)
+    {
+        ASSERT_NE(map.at(i), nullptr);
+    }
+
 
 }

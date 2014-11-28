@@ -19,7 +19,7 @@ LinearAllocator::LinearAllocator(char* begin, char* end)
 
 void* LinearAllocator::allocate(unsigned int size)
 {
-    assert(size < (pEnd - current));
+    assert(size <= (pEnd - current));
     auto mem = current;
 
     current += size;

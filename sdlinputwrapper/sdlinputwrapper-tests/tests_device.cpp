@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "../sdlinputwrapper.h"
 #include "inputaction.h"
-
+#include "inputtestoracle.h"
 enum EInputContext
 {
     ModShiftContext
@@ -23,6 +23,8 @@ enum EEventTestAxis
 
 TEST(InputDevice, EventTest)
 {
+    InputTestOracle testOracle;
+
     sdli::Processor processor{1};
     sdli::Context* ctx = processor.createContext(0);
 
@@ -34,4 +36,10 @@ TEST(InputDevice, EventTest)
     float range = device.getRange(EEventTestAxis::MoveHorizontal);
 
     ASSERT_EQ(0.0f, range);
+
+    SDL_Event event;
+
+    testOracle.generateEvent(&event);
+    processor.handleSdlEvents(event);
+
 }
