@@ -20,7 +20,9 @@ public:
     const char& operator[](unsigned int idx) const;
 
     char* begin();
+    char* begin() const;
     char* end();
+    char* end() const;
 
     unsigned int size() const;
 };
@@ -69,7 +71,7 @@ public:
         return (T*)(BaseArray::pEnd);
     }
 
-    unsigned int size() const
+    unsigned int capacity() const
     {
         return (pEnd - pBegin)/sizeof(T);
     }

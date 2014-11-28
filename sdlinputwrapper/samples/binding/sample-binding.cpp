@@ -28,7 +28,7 @@ enum SampleContext
 
 int main(int argc, char** argv)
 {
-//    std::setbuf(stdout, NULL); // used to always flush std::cout
+    std::setbuf(stdout, NULL); // used to always flush std::cout
 
     auto sdl_init_status = SDL_Init(SDL_INIT_EVENTS
                                      | SDL_INIT_JOYSTICK
@@ -47,23 +47,23 @@ int main(int argc, char** argv)
     auto ctx1 = inputproc->createContext(SampleContext::GameMod);
     auto ctx2 = inputproc->createContext(SampleContext::Game);
 
-    ctx1->mapDigital(SDL_SCANCODE_S, SampleInputActions::SampleDown);
-    ctx2->mapDigital(SDL_SCANCODE_S, SampleInputActions::SampleDown);
+    ctx1->mapButton(SDL_SCANCODE_S, SampleInputActions::SampleDown);
+    ctx2->mapButton(SDL_SCANCODE_S, SampleInputActions::SampleDown);
 
-    ctx1->mapDigital(SDL_SCANCODE_F1, SampleInputActions::CHANGE_CTX);
-    ctx2->mapDigital(SDL_SCANCODE_F1, SampleInputActions::CHANGE_CTX);
+    ctx1->mapButton(SDL_SCANCODE_F1, SampleInputActions::CHANGE_CTX);
+    ctx2->mapButton(SDL_SCANCODE_F1, SampleInputActions::CHANGE_CTX);
 
-    ctx1->mapDigital(SDL_CONTROLLER_BUTTON_A, SampleInputActions::SampleDown);
-    ctx1->mapDigital(SDL_CONTROLLER_BUTTON_X, SampleInputActions::CHANGE_CTX);
+    ctx1->mapButton(SDL_CONTROLLER_BUTTON_A, SampleInputActions::SampleDown);
+    ctx1->mapButton(SDL_CONTROLLER_BUTTON_X, SampleInputActions::CHANGE_CTX);
 
-    ctx2->mapDigital(SDL_CONTROLLER_BUTTON_X, SampleInputActions::CHANGE_CTX);
-    ctx2->mapDigital(SDL_SCANCODE_ESCAPE, SampleInputActions::GAME_QUIT);
+    ctx2->mapButton(SDL_CONTROLLER_BUTTON_X, SampleInputActions::CHANGE_CTX);
+    ctx2->mapButton(SDL_SCANCODE_ESCAPE, SampleInputActions::GAME_QUIT);
 
     auto l = []()
     {
         std::cout << "Hello";
     };
-    ctx1->addCallback(SampleInputActions::SampleDown, sdli::CallType::OnPress, l);
+    ctx1->addCallback(sdli::CallType::OnPress, SampleInputActions::SampleDown, l);
 
     auto l2 = [ctx1, ctx2, &device, &pad]()
     {
@@ -75,13 +75,13 @@ int main(int argc, char** argv)
         std::cout << "swap to ctx2 while hold" << std::endl;
     };
 
-    ctx2->addCallback(SampleInputActions::GAME_QUIT, sdli::CallType::OnPress, [&sampleQuit](){
+    ctx2->addCallback(sdli::CallType::OnPress, SampleInputActions::GAME_QUIT, [&sampleQuit](){
         sampleQuit = true;
     });
 
-    ctx1->addCallback(SampleInputActions::CHANGE_CTX, sdli::CallType::OnPress, l2);
+    ctx1->addCallback(sdli::CallType::OnPress, SampleInputActions::CHANGE_CTX, l2);
 
-    ctx2->addCallback(SampleInputActions::CHANGE_CTX, sdli::CallType::OnRelease, [=, &device, &pad]()
+    ctx2->addCallback(sdli::CallType::OnRelease, SampleInputActions::CHANGE_CTX, [=, &device, &pad]()
     {
         device.popContext();
         device.pushContext(ctx1);
@@ -91,7 +91,7 @@ int main(int argc, char** argv)
         std::cout << "change back to ctx1 - released" << std::endl;
     });
 
-    ctx1->addCallback(SampleInputActions::SampleDown, sdli::CallType::OnRelease, []()
+    ctx1->addCallback(sdli::CallType::OnRelease, SampleInputActions::SampleDown, []()
     {
         std::cout << " World" << std::endl;
     });

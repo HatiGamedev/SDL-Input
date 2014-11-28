@@ -53,6 +53,13 @@ void Device::poll()
     interface->poll(*contextStack_.top());
 }
 
+void Device::pollAxes()
+{
+    _DEVICE_GUARD_(interface, ;);
+
+    interface->pollAxes(*contextStack_.top());
+}
+
 void Device::dispatch()
 {
     _DEVICE_GUARD_(interface, ;);

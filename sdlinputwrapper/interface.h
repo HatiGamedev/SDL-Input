@@ -42,6 +42,8 @@ public:
     Interface();
 
     void poll(sdli::Context& ctx);
+    void pollAxes(sdli::Context& ctx);
+
     void push(InputType type, unsigned int rawInput, int value);
     void dispatch(Context& ctx);
 

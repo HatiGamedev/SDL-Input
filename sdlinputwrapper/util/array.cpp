@@ -42,7 +42,17 @@ char* BaseArray::begin()
     return pBegin;
 }
 
+char*BaseArray::begin() const
+{
+    return pBegin;
+}
+
 char* BaseArray::end()
+{
+    return pEnd;
+}
+
+char*BaseArray::end() const
 {
     return pEnd;
 }

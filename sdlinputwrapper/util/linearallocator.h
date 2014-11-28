@@ -35,7 +35,56 @@ public:
     {
         return sizeof(T) * size;
     }
+
+    template<typename T>
+    T* begin()
+    {
+        return (T*)BaseArray::begin();
+    }
+
+    template<typename T>
+    T* begin() const
+    {
+        return (T*)BaseArray::begin();
+    }
+
+    template<typename T>
+    T* end()
+    {
+        return (T*)current;
+    }
+
+    template<typename T>
+    T* end() const
+    {
+        return (T*)current;
+    }
+
+    unsigned int bytes()
+    {
+        return (pEnd - pBegin);
+    }
+
+    template<typename T>
+    unsigned int capacity()
+    {
+        return (pEnd - pBegin)/sizeof(T);
+    }
+
+    unsigned int size()
+    {
+        return (current - pBegin);
+    }
+
+    template<typename T>
+    unsigned int size()
+    {
+        return (current - pBegin) / sizeof(T);
+    }
+
 };
+
+
 
 } // util
 } // sdli

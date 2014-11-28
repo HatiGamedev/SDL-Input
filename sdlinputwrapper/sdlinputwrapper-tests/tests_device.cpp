@@ -7,15 +7,7 @@ enum EInputContext
     ModShiftContext
 };
 
-TEST(InputDevice, defaults)
-{
-//    sdli::Interface device;
-    auto processor = std::unique_ptr<sdli::Processor>(new sdli::Processor(2));
-    processor->createContext(EInputContext::ModShiftContext);
-
-}
-
-TEST(InputDevice, UnmappedDefaults)
+TEST(InputDevice, Defaults)
 {
     sdli::Interface device;
     ASSERT_EQ(false, device.isPressed(EInputAction::Down));
@@ -24,4 +16,22 @@ TEST(InputDevice, UnmappedDefaults)
     ASSERT_EQ(true, device.isUp(EInputAction::Down));
 }
 
+enum EEventTestAxis
+{
+    MoveHorizontal
+};
 
+TEST(InputDevice, EventTest)
+{
+    sdli::Processor processor{1};
+    sdli::Context* ctx = processor.createContext(0);
+
+    ctx->mapAxis(SDL_SCANCODE_A, SDL_SCANCODE_D, EEventTestAxis::MoveHorizontal);
+
+    auto& device = processor.getDevice(sdli::InputType::Keyboard, 0);
+    device.pushContext(ctx);
+
+    float range = device.getRange(EEventTestAxis::MoveHorizontal);
+
+    ASSERT_EQ(0.0f, range);
+}

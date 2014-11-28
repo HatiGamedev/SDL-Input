@@ -59,7 +59,7 @@ int main(int argc, char** argv)
     auto ctx1 = inputproc->createContext(SampleContext::GameMod);
     auto ctx2 = inputproc->createContext(SampleContext::Game);
 
-    ctx1->mapDigital(SDL_SCANCODE_S, SampleInputActions::SampleDown);
+    STUB(ctx1->mapDigital(SDL_SCANCODE_S, SampleInputActions::SampleDown);
     ctx2->mapDigital(SDL_SCANCODE_S, SampleInputActions::SampleDown);
 
     ctx1->mapDigital(SDL_SCANCODE_F1, SampleInputActions::CHANGE_CTX);
@@ -77,7 +77,7 @@ int main(int argc, char** argv)
     };
     ctx1->addCallback(SampleInputActions::SampleDown, sdli::CallType::OnPress, l);
 
-    auto l2 = [ctx1, ctx2, &device, &pad]()
+    /*auto l2 = [ctx1, ctx2, &device, &pad]()
     {
         device.popContext();
         device.pushContext(ctx2);
@@ -85,7 +85,7 @@ int main(int argc, char** argv)
         pad.popContext();
         pad.pushContext(ctx2);
         std::cout << "swap to ctx2 while hold" << std::endl;
-    };
+    };*/
 
     ctx2->addCallback(SampleInputActions::GAME_QUIT, sdli::CallType::OnPress, [&sampleQuit](){
         sampleQuit = true;
@@ -108,7 +108,7 @@ int main(int argc, char** argv)
     ctx1->addCallback(SampleInputActions::SampleDown, sdli::CallType::OnRelease, []()
     {
         std::cout << " World" << std::endl;
-    });
+    }););
     /** END Mappings **/
 
     SDL_Window* w = SDL_CreateWindow("SampleWindow", 0, 0, 256, 256, SDL_WindowFlags::SDL_WINDOW_SHOWN|SDL_WindowFlags::SDL_WINDOW_OPENGL);

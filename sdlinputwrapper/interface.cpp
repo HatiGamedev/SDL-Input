@@ -52,7 +52,7 @@ void Interface::handleGamecontroller(const sdli::Context& ctx, const Interface::
 {
 //    auto& ctx = this->contextStack_.top();
 
-    auto inputAction = ctx.buttonAction(static_cast<SDL_GameControllerButton>(raw.rawInput));
+    STUB(auto inputAction = ctx.buttonAction(static_cast<SDL_GameControllerButton>(raw.rawInput));
     auto& logic = logicDigitalData[inputAction];
 
     logic.currentStatus = raw.pollResult;
@@ -65,7 +65,7 @@ void Interface::handleGamecontroller(const sdli::Context& ctx, const Interface::
     if(::sdli::isReleased(logic))
     {
         ctx.fireCallbacks(inputAction, sdli::CallType::OnRelease);
-    }
+    });
 
 }
 
@@ -79,7 +79,7 @@ void Interface::poll(sdli::Context& ctx)
 
     auto sdl_keystate = SDL_GetKeyboardState(NULL);
 
-    auto& keymap = ctx.keyboardKeys();
+    STUB(auto& keymap = ctx.keyboardKeys();
 
     for(auto& k : keymap)
     {
@@ -87,7 +87,12 @@ void Interface::poll(sdli::Context& ctx)
         auto& data = logicDigitalData[k.second];
         data.previousStatus = data.currentStatus;
         data.currentStatus = state;
-    }
+    });
+}
+
+void Interface::pollAxes(Context& ctx)
+{
+
 }
 
 void Interface::push(InputType type, unsigned int rawInput, int value)
@@ -116,24 +121,6 @@ void Interface::dispatch(sdli::Context& ctx)
             break;
         default:
             break;
-//        case InputType::Keyboard:
-//            logicDigitalData[keyboardKeys[static_cast<SDL_Scancode>(d.rawInput)]].currentStatus |= d.pollResult;
-//            break;
-
-//        case InputType::GamecontrollerButton:
-//            logicDigitalData[gameControllerButtons[static_cast<SDL_GameControllerButton>(d.rawInput)]].currentStatus |= d.pollResult;
-//            break;
-
-//        case InputType::GamecontrollerAxis:
-//            logicAnalogData[gameControllerAxes[static_cast<SDL_GameControllerAxis>(d.rawInput)].axis].currentStatus = static_cast<float>(d.pollResult);
-//            // / gameControllerAxes[static_cast<SDL_GameControllerAxis>(d.rawInput)].normalizeValue;
-//            break;
-//        case InputType::MouseButton:
-//            // TBA - Req for public ?
-//            break;
-//        case InputType::MouseAxis:
-//            // TBA - Req for public ?
-//            break;
         }
     }
 

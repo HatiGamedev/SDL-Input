@@ -19,8 +19,14 @@ INCLUDE_DIRECTORIES(
 #add_subdirectory(util)
 SET(SDLINPUTWRAPPER_LIB_SRC_LIST
     ${SDLINPUTWRAPPER_LIB_SRC_LIST}
+
+    # util
     util/array.cpp
+    util/indexmap.cpp
     util/linearallocator.cpp
+
+    # data
+    data/sdli_axis.cpp
 )
 
 OPTION(SDLI_Enable_Tests "Compiles sdli gtests" OFF)
