@@ -1,4 +1,4 @@
-#include "inputtestoracle.h"
+#include "oracle_inputdevice.h"
 #include <SDL2/SDL_events.h>
 #include <random>
 

@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 #include "../sdlinputwrapper.h"
 #include "inputaction.h"
-#include "inputtestoracle.h"
+#include "oracle_inputdevice.h"
+
+
 enum EInputContext
 {
     ModShiftContext
@@ -39,7 +41,11 @@ TEST(InputDevice, EventTest)
 
     SDL_Event event;
 
-    testOracle.generateEvent(&event);
+    testOracle.generateKeyboardEvent(&event);
+
+
     processor.handleSdlEvents(event);
+
+
 
 }
