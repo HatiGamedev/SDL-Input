@@ -23,6 +23,12 @@ enum EEventTestAxis
     MoveHorizontal
 };
 
+enum EEventTestButton
+{
+    Action_A,
+    Action_B
+};
+
 TEST(InputDevice, EventTest)
 {
     InputTestOracle testOracle;
@@ -31,21 +37,24 @@ TEST(InputDevice, EventTest)
     sdli::Context* ctx = processor.createContext(0);
 
     ctx->mapAxis(SDL_SCANCODE_A, SDL_SCANCODE_D, EEventTestAxis::MoveHorizontal);
+    ctx->mapButton(SDL_SCANCODE_J, EEventTestButton::Action_A);
+    ctx->mapButton(SDL_SCANCODE_K, EEventTestButton::Action_B);
 
-    auto& device = processor.getDevice(sdli::InputType::Keyboard, 0);
+
+    auto& device = processor.getKeyboard();
     device.pushContext(ctx);
 
     float range = device.getRange(EEventTestAxis::MoveHorizontal);
 
+
     ASSERT_EQ(0.0f, range);
 
     SDL_Event event;
-
-    testOracle.generateKeyboardEvent(&event);
+//    testOracle.generateKeyboardEvent(&event);
 
 
     processor.handleSdlEvents(event);
 
-
+    ASSERT_EQ(device.isDown(EEventTestButton::Action_A), false);
 
 }

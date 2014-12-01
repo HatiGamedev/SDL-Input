@@ -67,5 +67,6 @@ TEST(Util, IndexMapMax)
         ASSERT_NE(map.at(i), nullptr);
     }
 
+    EXPECT_EXIT(map.move(1, 2), ::testing::KilledBySignal(SIGABRT), "");
 
 }

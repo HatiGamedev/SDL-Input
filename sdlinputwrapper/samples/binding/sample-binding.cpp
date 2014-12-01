@@ -39,8 +39,8 @@ int main(int argc, char** argv)
 
     auto inputproc = std::unique_ptr<sdli::Processor>(new sdli::Processor(SampleContext::MAX_COUNT));
 
-    auto& device = inputproc->getDevice(sdli::InputType::Keyboard, 0);
-    auto& pad = inputproc->getDevice(sdli::InputType::Gamecontroller, 0);
+    auto& device = inputproc->getKeyboard();
+    auto& pad = inputproc->getGamecontroller(0);
 
     /** BEG Mappings **/
 
@@ -121,15 +121,8 @@ int main(int argc, char** argv)
             inputproc->handleSdlEvents(event);
         }
 
-//        inputproc->poll();
-
-//        pad.dispatch();
-
-
         inputproc->dispatch();
         inputproc->swap();
-
-//        pad.swap();
         SDL_GL_SwapWindow(w);
     }
 

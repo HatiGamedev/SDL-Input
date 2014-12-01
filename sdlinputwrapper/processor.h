@@ -41,10 +41,12 @@ public:
     sdli::Context* createContext(const sdli::ContextId& contextId);
     sdli::Context* getContext(const sdli::ContextId& contextId);
 
-    sdli::Device& getDevice(sdli::InputType type, Sint32 id);
+    sdli::Device& getKeyboard();
+    sdli::Device& getGamecontroller(unsigned int id);
+
     void deactivateDevice(const sdli::Device& d);
 
-    unsigned int controllers() {return 0;}
+    unsigned int controllers() {return SDL_NumJoysticks();}
 
     void handleSdlEvents(const SDL_Event& e);
 

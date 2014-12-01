@@ -85,21 +85,14 @@ sdli::Context* Processor::getContext(const sdli::ContextId& contextId)
     return &contextMap[contextId];
 }
 
-sdli::Device& Processor::getDevice(InputType type, Sint32 id)
+Device& Processor::getKeyboard()
 {
-    switch(type)
-    {
-    case sdli::InputType::Keyboard:
-        return keyboardDevice;
-        break;
-    case sdli::InputType::Gamecontroller:
-        return getControllerDevice(id);
-        break;
-    default:
-        assert(false);
-        return keyboardDevice;
-        break;
-    }
+    return keyboardDevice;
+}
+
+Device&Processor::getGamecontroller(unsigned int id)
+{
+    return getControllerDevice(id);
 }
 
 void Processor::handleSdlEvents(const SDL_Event& e)
