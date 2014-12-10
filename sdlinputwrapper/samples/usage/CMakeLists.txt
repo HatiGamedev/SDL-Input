@@ -11,10 +11,13 @@ INCLUDE_DIRECTORIES(
 )
 
 
+pkg_search_module(OpenGL REQUIRED gl)
+
 add_executable(${PROJECT_NAME} ${SDLINPUTWRAPPER_SAMPLES_SRC_LIST})
 target_link_libraries(${PROJECT_NAME}
     ${GTEST_LIBRARIES}
     ${SDL2_LIBRARIES}
+    ${OpenGL_LIBRARIES}
     sdlinputwrapper
 )
 

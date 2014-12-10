@@ -48,18 +48,14 @@ Context* Device::popContext()
 void Device::poll()
 {
     _DEVICE_GUARD_(interface, ;);
+    assert(!contextStack_.empty());
     interface->poll(*contextStack_.top());
-}
-
-void Device::pollAxes()
-{
-    _DEVICE_GUARD_(interface, ;);
-    interface->pollAxes(*contextStack_.top());
 }
 
 void Device::dispatch()
 {
     _DEVICE_GUARD_(interface, ;);
+    assert(!contextStack_.empty());
     interface->dispatch(*contextStack_.top());
 }
 

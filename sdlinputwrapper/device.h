@@ -28,7 +28,6 @@ public:
     sdli::Context* popContext();
 
     void poll();
-    void pollAxes();
     void dispatch();
 
 
