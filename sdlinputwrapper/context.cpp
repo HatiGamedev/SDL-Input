@@ -8,7 +8,7 @@ Context::Context(const ContextId& contextId)
       keyboardKeys_(128), ///TODO: make variable
       gameControllerButtons(SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_MAX),
       //gameControllerAxes(SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_MAX)
-      axisMapping(12) ///TODO: make
+      axisMapping_(12) ///TODO: make
 {
 }
 
@@ -25,7 +25,7 @@ void Context::mapAxis(SDL_GameControllerAxis raw, InputAxis axis, float normaliz
 
 void Context::mapAxis(SDL_Scancode rawNegative, SDL_Scancode rawPositive, sdli::InputAxis axis)
 {
-    axisMapping.emplace({rawNegative, rawPositive}, axis);
+    axisMapping_.emplace({rawNegative, rawPositive}, axis);
 }
 
 void Context::mapButton(SDL_Scancode rawKey, InputAction action)
@@ -80,6 +80,11 @@ void Context::fireCallbacks(InputAction action, CallType callType) const
 const sdli::util::IndexMap<SDL_Scancode, InputAction>& Context::keyboardKeys() const
 {
     return keyboardKeys_;
+}
+
+const sdli::util::IndexMap<SDL_Axis, AxisMapping>&Context::axisMapping() const
+{
+    return axisMapping_;
 }
 
 } // sdli

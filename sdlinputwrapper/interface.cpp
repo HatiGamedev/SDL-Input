@@ -1,6 +1,7 @@
 #include "interface.h"
 #include "context.h"
 #include <iostream>
+#include <SDL2/SDL_events.h>
 
 namespace sdli {
 
@@ -84,6 +85,34 @@ void Interface::poll(sdli::Context& ctx)
     auto sdl_keystate = SDL_GetKeyboardState(NULL);
 
     auto& keymap = ctx.keyboardKeys();
+    auto& axisMap = ctx.axisMapping();
+
+    auto axisIt = axisMap.begin();
+    auto axisEnd = axisMap.end();
+
+    for(;axisIt!=axisEnd;++axisIt)
+    {
+        if(axisIt->idx.type == SDL_Axis::Type::Keyboard)
+        {
+            auto pollResult = 0.0f;
+
+            auto neg = sdl_keystate[axisIt->idx.axis.rawNegative];
+            auto pos = sdl_keystate[axisIt->idx.axis.rawPositive];
+
+            if(neg == SDL_PRESSED)
+            {
+                pollResult -= 1.0f;
+            }
+            if(pos == SDL_PRESSED)
+            {
+                pollResult += 1.0f;
+            }
+
+            auto data = axisIt->data;
+            logicAnalogData[data->axis].currentStatus = pollResult / data->normalize;
+
+        }
+    }
 
     auto it = keymap.begin();
     for(;it!=keymap.end();++it)

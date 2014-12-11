@@ -31,7 +31,7 @@ public:
     void dispatch();
 
 
-    float getRange(InputAxis axis);
+    float getAxis(InputAxis axis);
     bool isPressed(InputAction action);
     bool isReleased(InputAction action);
     bool isDown(InputAction action);

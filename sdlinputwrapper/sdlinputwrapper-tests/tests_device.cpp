@@ -44,7 +44,7 @@ TEST(InputDevice, EventTest)
     auto& device = processor.getKeyboard();
     device.pushContext(ctx);
 
-    float range = device.getRange(EEventTestAxis::MoveHorizontal);
+    float range = device.getAxis(EEventTestAxis::MoveHorizontal);
 
 
     ASSERT_EQ(0.0f, range);

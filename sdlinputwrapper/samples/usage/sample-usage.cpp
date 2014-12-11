@@ -20,6 +20,7 @@ enum SampleInputActions
 
 enum SampleInputAxis
 {
+    Vertical,
     Horizontal
 };
 
@@ -77,8 +78,14 @@ int main(int argc, char** argv)
     auto ctx = inputproc->createContext(Game);
     ctx->mapAxis(SDL_SCANCODE_LEFT, SDL_SCANCODE_RIGHT, SampleInputAxis::Horizontal);
     ctx->mapAxis(SDL_SCANCODE_A, SDL_SCANCODE_D, SampleInputAxis::Horizontal);
+    ctx->mapAxis(SDL_SCANCODE_S, SDL_SCANCODE_W, SampleInputAxis::Vertical);
 
     keyboard.pushContext(ctx);
+    struct Test {
+        float   x{0.0f},
+                y{0.0f};
+    } player;
+
 
     SDL_Event event;
     while(!sampleQuit)
@@ -97,13 +104,18 @@ int main(int argc, char** argv)
         inputproc->poll();
         inputproc->dispatch();
 
+        player.x += keyboard.getAxis(SampleInputAxis::Horizontal) * 0.001f;
+        player.y += keyboard.getAxis(SampleInputAxis::Vertical) * 0.001f;
+
+        glClearColor(0,0,0,1);
+        glClear(GL_DEPTH_BUFFER_BIT|GL_COLOR_BUFFER_BIT);
 
         glColor4fv((const GLfloat*)color);
         glBegin(GL_TRIANGLE_STRIP);
-            glVertex2f(0.0f - dx, 0.0f - dy);
-            glVertex2f(0.0f + dx, 0.0f - dy);
-            glVertex2f(0.0f - dx, 0.0f + dy);
-            glVertex2f(0.0f + dx, 0.0f + dy);
+            glVertex2f(player.x - dx, player.y - dy);
+            glVertex2f(player.x + dx, player.y - dy);
+            glVertex2f(player.x - dx, player.y + dy);
+            glVertex2f(player.x + dx, player.y + dy);
         glEnd();
 
         inputproc->swap();

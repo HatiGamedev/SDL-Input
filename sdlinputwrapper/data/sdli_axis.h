@@ -40,6 +40,8 @@ struct SDL_Axis
         axis.rawPositive = positive;
     }
 
+
+
 };
 } // sdli
 bool operator==(const sdli::SDL_Axis& a1, const sdli::SDL_Axis& a2);

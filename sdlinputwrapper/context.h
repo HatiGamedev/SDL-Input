@@ -44,7 +44,7 @@ class Context
 
     sdli::util::IndexMap<SDL_GameControllerButton, InputAction> gameControllerButtons;
 
-    sdli::util::IndexMap<SDL_Axis, AxisMapping> axisMapping;
+    sdli::util::IndexMap<SDL_Axis, AxisMapping> axisMapping_;
 
     std::map<sdli::InputAction, std::map<sdli::CallType, sdli::CallList>> callbacks;
 
@@ -78,6 +78,7 @@ public:
     void fireCallbacks(sdli::InputAction action, sdli::CallType callType) const;
 
     const sdli::util::IndexMap<SDL_Scancode, InputAction>& keyboardKeys() const;
+    const sdli::util::IndexMap<SDL_Axis, AxisMapping>& axisMapping() const;
 
 };
 

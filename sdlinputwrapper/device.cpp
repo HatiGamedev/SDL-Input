@@ -59,7 +59,7 @@ void Device::dispatch()
     interface->dispatch(*contextStack_.top());
 }
 
-float Device::getRange(InputAxis axis)
+float Device::getAxis(InputAxis axis)
 {
     _DEVICE_GUARD_(interface, ::sdli::RANGE_UNDEFINED);
     return interface->getRange(axis);
