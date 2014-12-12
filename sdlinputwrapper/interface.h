@@ -20,13 +20,6 @@ namespace sdli {
 class Interface
 {
 private:
-    struct RawInputData
-    {
-        InputType type;
-        unsigned int rawInput;
-        int pollResult;
-    };
-
     std::vector<RawInputData> perFrameCaptures;
 
     sdli::util::IndexMap<InputAxis, LogicAnalogData> logicAnalogData;

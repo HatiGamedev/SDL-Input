@@ -48,6 +48,7 @@ enum class InputType
 class Processor;
 class Context;
 class Interface;
+class KeyboardInterface;
 class Device;
 
 using Callback = sdli::util::Lambda<void(void)>;
@@ -61,6 +62,20 @@ namespace {
     const bool IS_PRESSED_UNDEFINED = false;
     const float RANGE_UNDEFINED = 0.0f;
 }
+
+struct RawInputData
+{
+    unsigned int rawInput;
+    int pollResult;
+};
+
+float clamp(float cur, float min, float max);
+
+bool isPressed(const LogicDigitalData& d);
+bool isReleased(const LogicDigitalData& d);
+bool isDown(const LogicDigitalData& d);
+bool isUp(const LogicDigitalData& d);
+
 
 } // sdli
 

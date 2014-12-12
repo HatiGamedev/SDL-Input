@@ -1,6 +1,7 @@
 #include "device.h"
 #include "interface.h"
 #include "context.h"
+#include "keyboardinterface.h"
 #include <iostream>
 
 #define _DEVICE_GUARD_(x, defVal) if(!(x)) { return defVal;}
@@ -13,8 +14,12 @@ void Device::setInterface(Interface* interface)
     this->interface = interface;
 }
 
-Device::Device(Interface* interface)
-    : interface(interface)
+void Device::setKeyboard(KeyboardInterface* keyboard)
+{
+    keyboardInterface = keyboard;
+}
+
+Device::Device()
 {
 }
 
@@ -48,6 +53,11 @@ Context* Device::popContext()
 
 void Device::poll()
 {
+
+    if(keyboardInterface)
+    {
+        keyboardInterface->poll(*contextStack_.top());
+    }
     _DEVICE_GUARD_(interface, ;);
     assert(!contextStack_.empty());
     interface->poll(*contextStack_.top());
@@ -55,6 +65,10 @@ void Device::poll()
 
 void Device::dispatch()
 {
+    if(keyboardInterface)
+    {
+        keyboardInterface->dispatch(*contextStack_.top());
+    }
     _DEVICE_GUARD_(interface, ;);
     assert(!contextStack_.empty());
     interface->dispatch(*contextStack_.top());
@@ -62,36 +76,60 @@ void Device::dispatch()
 
 float Device::getAxis(InputAxis axis)
 {
+    if(keyboardInterface)
+    {
+        return keyboardInterface->getRange(axis);
+    }
     _DEVICE_GUARD_(interface, ::sdli::RANGE_UNDEFINED);
     return interface->getRange(axis);
 }
 
 bool Device::isPressed(InputAction action)
 {
+    if(keyboardInterface)
+    {
+        return keyboardInterface->isPressed(action);
+    }
     _DEVICE_GUARD_(interface, ::sdli::IS_PRESSED_UNDEFINED);
     return interface->isPressed(action);
 }
 
 bool Device::isReleased(InputAction action)
 {
+    if(keyboardInterface)
+    {
+        return keyboardInterface->isReleased(action);
+    }
     _DEVICE_GUARD_(interface, ::sdli::IS_RELEASED_UNDEFINED);
     return interface->isReleased(action);
 }
 
 bool Device::isDown(InputAction action)
 {
+    if(keyboardInterface)
+    {
+        return keyboardInterface->isDown(action);
+    }
     _DEVICE_GUARD_(interface, ::sdli::IS_DOWN_UNDEFINED);
     return interface->isDown(action);
 }
 
 bool Device::isUp(InputAction action)
 {
+    if(keyboardInterface)
+    {
+        return keyboardInterface->isUp(action);
+    }
     _DEVICE_GUARD_(interface, ::sdli::IS_UP_UNDEFINED);
     return interface->isUp(action);
 }
 
 void Device::swap()
 {
+    if(keyboardInterface)
+    {
+        keyboardInterface->swap();
+    }
     _DEVICE_GUARD_(interface,;);
     interface->swap();
 }

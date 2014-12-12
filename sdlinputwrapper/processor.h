@@ -5,7 +5,7 @@
 #include <memory>
 
 #include <SDL2/SDL_events.h>
-
+#include "keyboardinterface.h"
 #include "sdli_definitions.h"
 #include "device.h"
 #include "util/array.h"
@@ -16,12 +16,11 @@ namespace sdli {
 class Processor
 {
     /// TODO: proposal: linearilize
-//    std::map<sdli::ContextId, std::unique_ptr<sdli::Context>> contextMap; /// TODO: using array to access contexts
     sdli::util::Array<sdli::Context> contextMap;
 
-    std::unique_ptr<sdli::Interface> keyboard;
+//    std::unique_ptr<sdli::Interface> keyboard;
+    std::unique_ptr<sdli::KeyboardInterface> keyboard;
     sdli::util::IndexMap<Sint32, std::unique_ptr<sdli::Interface>> gamecontrollers;
-//    std::map<Sint32, std::unique_ptr<sdli::Interface>> gamecontrollers; /// TODO: using array to access interfaces
 
     sdli::util::IndexMap<Sint32, Sint32> hardwareToJoystickId;
 

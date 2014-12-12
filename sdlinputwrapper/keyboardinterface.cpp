@@ -1,66 +1,27 @@
-#include "interface.h"
+#include "keyboardinterface.h"
+
+#include <SDL_keyboard.h>
+#include <SDL_events.h>
+
 #include "context.h"
-#include <iostream>
-#include <SDL2/SDL_events.h>
+
+
 
 namespace sdli {
 
-
-void Interface::handleKeyboard(const sdli::Context& ctx, const sdli::RawInputData& raw)
+KeyboardInterface::KeyboardInterface(const int max_actions, const int max_axes)
+    : logicAnalogData(max_axes),
+      captureBuffer(max_actions)
 {
-    auto inputAction = ctx.keyAction(static_cast<SDL_Scancode>(raw.rawInput));
-    if(captureBuffer.at(inputAction) == nullptr)
-    {
-        captureBuffer.emplace(inputAction);
-    }
-    auto& logic = captureBuffer.get(inputAction);
-
-    logic.currentStatus = raw.pollResult;
-
-    if(::sdli::isPressed(logic))
-    {
-        ctx.fireCallbacks(inputAction, sdli::CallType::OnPress);
-    }
-
-    if(::sdli::isReleased(logic))
-    {
-        ctx.fireCallbacks(inputAction, sdli::CallType::OnRelease);
-    }
 
 }
 
-void Interface::handleGamecontroller(const sdli::Context& ctx, const sdli::RawInputData& raw)
+KeyboardInterface::~KeyboardInterface()
 {
-    auto inputAction = ctx.keyAction(static_cast<SDL_GameControllerButton>(raw.rawInput));
-    if(captureBuffer.at(inputAction) == nullptr)
-    {
-        captureBuffer.emplace(inputAction);
-    }
-
-    auto& logic = captureBuffer.get(inputAction);
-
-    logic.currentStatus = raw.pollResult;
-
-    if(::sdli::isPressed(logic))
-    {
-        ctx.fireCallbacks(inputAction, sdli::CallType::OnPress);
-    }
-
-    if(::sdli::isReleased(logic))
-    {
-        ctx.fireCallbacks(inputAction, sdli::CallType::OnRelease);
-    }
 
 }
 
-Interface::Interface()
-    : logicAnalogData(12), ///TODO: replace by inputaction count of processor
-      captureBuffer(10),
-      currentState(10)
-{
-}
-
-void Interface::poll(sdli::Context& ctx)
+void KeyboardInterface::poll(Context& ctx)
 {
     auto sdl_keystate = SDL_GetKeyboardState(NULL);
 
@@ -121,30 +82,40 @@ void Interface::poll(sdli::Context& ctx)
 
         captureBuffer.get(action).previousStatus = captureBuffer.get(action).currentStatus;
         captureBuffer.get(action).currentStatus = state;
-//        auto& data = logicDigitalData[*(it->data)];
-//        data.previousStatus = data.currentStatus;
-//        data.currentStatus = state;
     }
 }
 
-void Interface::push(InputType type, unsigned int rawInput, int value)
+void KeyboardInterface::push(unsigned int rawInput, int value)
 {
-    ///TODO: buffer resize properly
     perFrameCaptures.emplace_back(RawInputData{rawInput, value});
 }
 
-//TODO: evaluate isPressed correctly - detect changes over multiple samples
-void Interface::dispatch(sdli::Context& ctx)
+void KeyboardInterface::dispatch(Context& ctx)
 {
-    for(auto& d : perFrameCaptures)
+    for(auto& raw : perFrameCaptures)
     {
-        handleGamecontroller(ctx, d);
-    }
+        auto inputAction = ctx.keyAction(static_cast<SDL_Scancode>(raw.rawInput));
+        if(captureBuffer.at(inputAction) == nullptr)
+        {
+            captureBuffer.emplace(inputAction);
+        }
+        auto& logic = captureBuffer.get(inputAction);
 
-    perFrameCaptures.clear();
+        logic.currentStatus = raw.pollResult;
+
+        if(::sdli::isPressed(logic))
+        {
+            ctx.fireCallbacks(inputAction, sdli::CallType::OnPress);
+        }
+
+        if(::sdli::isReleased(logic))
+        {
+            ctx.fireCallbacks(inputAction, sdli::CallType::OnRelease);
+        }
+    }
 }
 
-float Interface::getRange(InputAxis axis)
+float KeyboardInterface::getRange(InputAxis axis)
 {
     if(logicAnalogData.at(axis) == nullptr)
     {
@@ -154,7 +125,7 @@ float Interface::getRange(InputAxis axis)
     return logicAnalogData.get(axis).currentStatus;
 }
 
-bool Interface::isPressed(InputAction action)
+bool KeyboardInterface::isPressed(InputAction action)
 {
     if(captureBuffer.at(action) == nullptr)
     {
@@ -164,7 +135,7 @@ bool Interface::isPressed(InputAction action)
     return ::sdli::isPressed(captureBuffer.get(action));
 }
 
-bool Interface::isReleased(InputAction action)
+bool KeyboardInterface::isReleased(InputAction action)
 {
     if(captureBuffer.at(action) == nullptr)
     {
@@ -174,7 +145,7 @@ bool Interface::isReleased(InputAction action)
     return ::sdli::isReleased(captureBuffer.get(action));
 }
 
-bool Interface::isDown(InputAction action)
+bool KeyboardInterface::isDown(InputAction action)
 {
     if(captureBuffer.at(action) == nullptr)
     {
@@ -184,7 +155,7 @@ bool Interface::isDown(InputAction action)
     return ::sdli::isDown(captureBuffer.get(action));
 }
 
-bool Interface::isUp(InputAction action)
+bool KeyboardInterface::isUp(InputAction action)
 {
     if(captureBuffer.at(action) == nullptr)
     {
@@ -194,7 +165,7 @@ bool Interface::isUp(InputAction action)
     return ::sdli::isUp(captureBuffer.get(action));
 }
 
-void Interface::swap()
+void KeyboardInterface::swap()
 {
     auto it = captureBuffer.dataBegin();
     auto end = captureBuffer.dataEnd();
@@ -212,4 +183,7 @@ void Interface::swap()
     }
 }
 
-}
+
+
+
+} // sdli

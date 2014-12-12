@@ -9,15 +9,18 @@ namespace sdli {
 class Device
 {
     sdli::Interface* interface {nullptr};
+    sdli::KeyboardInterface* keyboardInterface {nullptr};
+
     std::stack<sdli::Context*> contextStack_;
 
     friend class Processor;
 
 protected:
     void setInterface(sdli::Interface* interface);
+    void setKeyboard(sdli::KeyboardInterface* keyboard);
 
 public:
-    Device(sdli::Interface* interface);
+    Device();
 
     // Prevent user-copy, due to handle incoruption
     Device(const Device&) =delete;

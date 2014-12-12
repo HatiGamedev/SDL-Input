@@ -45,7 +45,7 @@ Device& Processor::getControllerDevice(Sint32 hardwareId)
 {
     if(gamecontrollerDevices.at(hardwareId) == nullptr) // non existend -> emplace
     {
-        gamecontrollerDevices.emplace(hardwareId, new sdli::Device(nullptr)); // create unlinked device
+        gamecontrollerDevices.emplace(hardwareId, new sdli::Device()); // create unlinked device
         devices.push_back(&(*gamecontrollerDevices.get(hardwareId)));
     }
     else
@@ -61,12 +61,13 @@ Device& Processor::getControllerDevice(Sint32 hardwareId)
 
 Processor::Processor(unsigned int maxContexts)
     : contextMap(maxContexts),
-      keyboard(new sdli::Interface),
+      keyboard(new sdli::KeyboardInterface(10, 10)), ///TODO: make max_counts variable
       gamecontrollers(10), ///TODO: make dynamic controller count
       hardwareToJoystickId(10),
-      keyboardDevice(keyboard.get()),
+      keyboardDevice(),
       gamecontrollerDevices(10)
 {
+    keyboardDevice.setKeyboard(keyboard.get());
     devices.push_back(&keyboardDevice);
 }
 
@@ -102,7 +103,7 @@ void Processor::handleSdlEvents(const SDL_Event& e)
     case SDL_KEYDOWN:
     case SDL_KEYUP:
 //        printf("Key-input: %d : %d", e.key.keysym.scancode, e.key.state);
-        keyboard->push(InputType::Keyboard, e.key.keysym.scancode, e.key.state);
+        keyboard->push(e.key.keysym.scancode, e.key.state);
         break;
     case SDL_CONTROLLERDEVICEADDED:
         printf("Controller added: %u\n", e.cdevice.which); // which := hardware-id
