@@ -124,7 +124,6 @@ void Interface::poll(sdli::Context& ctx)
             if(currentStatus!=0.0f)
             {
                 currentStatus = sdli::clamp(currentStatus + pollResult, -1, 1) / data->normalize;
-
             }
             else
             {
