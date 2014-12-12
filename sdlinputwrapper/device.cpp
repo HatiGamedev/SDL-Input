@@ -21,6 +21,7 @@ Device::Device(Interface* interface)
 void Device::pushContext(Context* ctx)
 {
     contextStack_.push(ctx);
+    printf("push %d\n", ctx->id());
 }
 
 Context* Device::currentContext()

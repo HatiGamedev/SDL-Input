@@ -51,7 +51,7 @@ struct Sprite
 
 int main(int argc, char** argv)
 {
-//    std::setbuf(stdout, NULL); // used to always flush std::cout
+    std::setbuf(stdout, NULL); // used to always flush std::cout
 
     auto sdl_init_status = SDL_Init(SDL_INIT_EVENTS
                                      | SDL_INIT_JOYSTICK
@@ -75,10 +75,26 @@ int main(int argc, char** argv)
     float dy = 0.025f;
     float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 
-    auto ctx = inputproc->createContext(Game);
+    auto ctx = inputproc->createContext(SampleContext::Game);
+    auto climb = inputproc->createContext(SampleContext::GameMod);
+
     ctx->mapAxis(SDL_SCANCODE_LEFT, SDL_SCANCODE_RIGHT, SampleInputAxis::Horizontal);
     ctx->mapAxis(SDL_SCANCODE_A, SDL_SCANCODE_D, SampleInputAxis::Horizontal);
     ctx->mapAxis(SDL_SCANCODE_S, SDL_SCANCODE_W, SampleInputAxis::Vertical);
+
+    ctx->mapButton(SDL_SCANCODE_E, SampleInputActions::Shoot);
+    ctx->mapButton(SDL_SCANCODE_F1, SampleInputActions::CHANGE_CTX);
+
+    ctx->addCallback(sdli::CallType::OnPress, SampleInputActions::CHANGE_CTX, [=,&keyboard](){
+        keyboard.pushContext(climb);
+    });
+
+
+    climb->mapButton(SDL_SCANCODE_F1, SampleInputActions::CHANGE_CTX);
+    climb->addCallback(sdli::CallType::OnRelease, SampleInputActions::CHANGE_CTX, [=,&keyboard](){
+        keyboard.popContext();
+    });
+
 
     keyboard.pushContext(ctx);
     struct Test {
@@ -109,8 +125,14 @@ int main(int argc, char** argv)
 
         if(keyboard.isPressed(SampleInputActions::Shoot))
         {
-            color[3] = 0.5f;
+            color[1] = 0.5f;
         }
+        if(keyboard.isReleased(SampleInputActions::Shoot))
+        {
+            color[1] = 1.0f;
+        }
+
+        color[0] = keyboard.isDown(SampleInputActions::CHANGE_CTX)?1.0f:0.0f;
 
         glClearColor(0,0,0,1);
         glClear(GL_DEPTH_BUFFER_BIT|GL_COLOR_BUFFER_BIT);
