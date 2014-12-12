@@ -129,8 +129,6 @@ void Interface::poll(sdli::Context& ctx)
             {
                 currentStatus = pollResult / data->normalize;
             }
-
-
         }
     }
 

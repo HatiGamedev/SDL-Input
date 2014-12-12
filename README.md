@@ -1,7 +1,7 @@
 Development status: alpha (sdli::Device breaking overhauls are unlikely to happen.)
 
 
-=====Goals of the library=====
+====Goals of the library====
 * Easy integration
 * Clear, self-explaining interface
 * Multiplayer input handling in mind
