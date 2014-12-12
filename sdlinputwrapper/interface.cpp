@@ -5,6 +5,11 @@
 
 namespace sdli {
 
+float clamp(float cur, float min, float max)
+{
+    return std::max(std::min(cur, max), min);
+}
+
 bool isPressed(const LogicDigitalData& d)
 {
     return d.currentStatus
@@ -75,7 +80,8 @@ void Interface::handleGamecontroller(const sdli::Context& ctx, const Interface::
 }
 
 Interface::Interface()
-    : captureBuffer(10), ///TODO: replace by inputaction count of processor
+    : logicAnalogData(12), ///TODO: replace by inputaction count of processor
+      captureBuffer(10),
       currentState(10)
 {
 }
@@ -94,6 +100,8 @@ void Interface::poll(sdli::Context& ctx)
     {
         if(axisIt->idx.type == SDL_Axis::Type::Keyboard)
         {
+            auto data = axisIt->data;
+
             auto pollResult = 0.0f;
 
             auto neg = sdl_keystate[axisIt->idx.axis.rawNegative];
@@ -107,25 +115,45 @@ void Interface::poll(sdli::Context& ctx)
             {
                 pollResult += 1.0f;
             }
+            if(logicAnalogData.at(data->axis)==nullptr)
+            {
+                logicAnalogData.emplace(data->axis);
+            }
 
-            auto data = axisIt->data;
-            logicAnalogData[data->axis].currentStatus = pollResult / data->normalize;
+            auto& currentStatus = logicAnalogData.get(data->axis).currentStatus;
+            if(currentStatus!=0.0f)
+            {
+                currentStatus = sdli::clamp(currentStatus + pollResult, -1, 1) / data->normalize;
+
+            }
+            else
+            {
+                currentStatus = pollResult / data->normalize;
+            }
+
 
         }
     }
 
     auto it = keymap.begin();
+
+
+
     for(;it!=keymap.end();++it)
     {
         auto state = sdl_keystate[it->idx];
+        auto action = *(it->data);
+        if(captureBuffer.at(action)==nullptr)
+        {
+            captureBuffer.emplace(action);
+        }
+
+        captureBuffer.get(action).previousStatus = captureBuffer.get(action).currentStatus;
+        captureBuffer.get(action).currentStatus = state;
 //        auto& data = logicDigitalData[*(it->data)];
 //        data.previousStatus = data.currentStatus;
 //        data.currentStatus = state;
     }
-}
-
-void Interface::pollAxes(Context& ctx)
-{
 }
 
 void Interface::push(InputType type, unsigned int rawInput, int value)
@@ -157,12 +185,12 @@ void Interface::dispatch(sdli::Context& ctx)
 
 float Interface::getRange(InputAxis axis)
 {
-    if(logicAnalogData.find(axis) == logicAnalogData.end())
+    if(logicAnalogData.at(axis) == nullptr)
     {
         return ::sdli::RANGE_UNDEFINED;
     }
 
-    return logicAnalogData[axis].currentStatus;
+    return logicAnalogData.get(axis).currentStatus;
 }
 
 bool Interface::isPressed(InputAction action)
@@ -212,6 +240,14 @@ void Interface::swap()
     for(;it!=end;++it)
     {
         it->previousStatus = it->currentStatus;
+    }
+
+    auto pollIt = logicAnalogData.dataBegin();
+    auto pollEnd= logicAnalogData.dataEnd();
+
+    for(;pollIt!=pollEnd;++pollIt)
+    {
+        pollIt->currentStatus = 0.0f;
     }
 }
 

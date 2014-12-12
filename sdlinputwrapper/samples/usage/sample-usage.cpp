@@ -107,8 +107,14 @@ int main(int argc, char** argv)
         player.x += keyboard.getAxis(SampleInputAxis::Horizontal) * 0.001f;
         player.y += keyboard.getAxis(SampleInputAxis::Vertical) * 0.001f;
 
+        if(keyboard.isPressed(SampleInputActions::Shoot))
+        {
+            color[3] = 0.5f;
+        }
+
         glClearColor(0,0,0,1);
         glClear(GL_DEPTH_BUFFER_BIT|GL_COLOR_BUFFER_BIT);
+
 
         glColor4fv((const GLfloat*)color);
         glBegin(GL_TRIANGLE_STRIP);
