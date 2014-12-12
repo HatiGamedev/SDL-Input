@@ -152,20 +152,4 @@ void Processor::swap()
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 } // sdli

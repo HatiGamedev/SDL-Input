@@ -62,6 +62,7 @@ public:
 
     void mapAxis(SDL_GameControllerAxis raw, sdli::InputAxis axis, float normalize=1.0f);
     void mapAxis(SDL_Scancode rawNegative, SDL_Scancode rawPositive, sdli::InputAxis axis);
+    void mapAxis(sdli::SDLI_MouseAxis raw, sdli::InputAxis axis);
 
     // TODO: Mousewheel missing, mouse axes missing
 

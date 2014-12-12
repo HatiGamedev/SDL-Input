@@ -28,6 +28,11 @@ void Context::mapAxis(SDL_Scancode rawNegative, SDL_Scancode rawPositive, sdli::
     axisMapping_.emplace({rawNegative, rawPositive}, axis);
 }
 
+void Context::mapAxis(SDLI_MouseAxis raw, InputAxis axis)
+{
+    axisMapping_.emplace({raw}, axis);
+}
+
 void Context::mapButton(SDL_Scancode rawKey, InputAction action)
 {
     keyboardKeys_.emplace(rawKey, action);

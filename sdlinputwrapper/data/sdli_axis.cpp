@@ -18,6 +18,9 @@ bool operator==(const sdli::SDL_Axis& a1, const sdli::SDL_Axis& a2)
         case sdli::SDL_Axis::Type::GameController:
             val = (a1.rawControllerAxis == a2.rawControllerAxis);
             break;
+        case sdli::SDL_Axis::Type::Mouse:
+            val = (a1.rawMouseAxis == a2.rawMouseAxis);
+            break;
         }
 
         return val;

@@ -5,6 +5,13 @@
 #include <SDL2/SDL_keyboard.h>
 
 namespace sdli {
+
+enum class SDLI_MouseAxis
+{
+    Horizontal,
+    Vertical
+};
+
 struct SDL_Axis
 {
     struct KeyboardAxis
@@ -17,12 +24,14 @@ struct SDL_Axis
     {
         KeyboardAxis axis;
         unsigned int rawControllerAxis;
+        unsigned int rawMouseAxis;
     };
 
     enum class Type
     {
         Keyboard,
-        GameController
+        GameController,
+        Mouse
     } type;
 
     SDL_Axis()
@@ -40,8 +49,11 @@ struct SDL_Axis
         axis.rawPositive = positive;
     }
 
-
-
+    SDL_Axis(SDLI_MouseAxis raw)
+        :rawMouseAxis(raw),
+         type(Type::Mouse)
+    {
+    }
 };
 } // sdli
 bool operator==(const sdli::SDL_Axis& a1, const sdli::SDL_Axis& a2);
