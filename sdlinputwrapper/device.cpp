@@ -19,6 +19,11 @@ void Device::setKeyboard(KeyboardInterface* keyboard)
     keyboardInterface = keyboard;
 }
 
+void Device::setMouseInterface(MouseInterface* mouse)
+{
+    mouseInterface = mouse;
+}
+
 Device::Device()
 {
 }
@@ -76,6 +81,7 @@ void Device::dispatch()
 
 float Device::getAxis(InputAxis axis)
 {
+    ///TODO: how to handle mouse and different normalized axes
     if(keyboardInterface)
     {
         return keyboardInterface->getRange(axis);
@@ -86,42 +92,26 @@ float Device::getAxis(InputAxis axis)
 
 bool Device::isPressed(InputAction action)
 {
-    if(keyboardInterface)
-    {
-        return keyboardInterface->isPressed(action);
-    }
-    _DEVICE_GUARD_(interface, ::sdli::IS_PRESSED_UNDEFINED);
-    return interface->isPressed(action);
+    return (keyboardInterface?keyboardInterface->isPressed(action): ::sdli::IS_PRESSED_UNDEFINED)
+           || (interface ? interface->isPressed(action) : ::sdli::IS_PRESSED_UNDEFINED);
 }
 
 bool Device::isReleased(InputAction action)
 {
-    if(keyboardInterface)
-    {
-        return keyboardInterface->isReleased(action);
-    }
-    _DEVICE_GUARD_(interface, ::sdli::IS_RELEASED_UNDEFINED);
-    return interface->isReleased(action);
+    return (keyboardInterface?keyboardInterface->isReleased(action): ::sdli::IS_RELEASED_UNDEFINED)
+           || (interface ? interface->isReleased(action) : ::sdli::IS_RELEASED_UNDEFINED);
 }
 
 bool Device::isDown(InputAction action)
 {
-    if(keyboardInterface)
-    {
-        return keyboardInterface->isDown(action);
-    }
-    _DEVICE_GUARD_(interface, ::sdli::IS_DOWN_UNDEFINED);
-    return interface->isDown(action);
+    return (keyboardInterface?keyboardInterface->isDown(action): ::sdli::IS_DOWN_UNDEFINED)
+           || (interface ? interface->isDown(action) : ::sdli::IS_DOWN_UNDEFINED);
 }
 
 bool Device::isUp(InputAction action)
 {
-    if(keyboardInterface)
-    {
-        return keyboardInterface->isUp(action);
-    }
-    _DEVICE_GUARD_(interface, ::sdli::IS_UP_UNDEFINED);
-    return interface->isUp(action);
+    return (keyboardInterface?keyboardInterface->isUp(action): ::sdli::IS_UP_UNDEFINED)
+           || (interface ? interface->isUp(action) : ::sdli::IS_UP_UNDEFINED);
 }
 
 void Device::swap()

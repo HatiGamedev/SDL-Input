@@ -62,9 +62,11 @@ Device& Processor::getControllerDevice(Sint32 hardwareId)
 Processor::Processor(unsigned int maxContexts)
     : contextMap(maxContexts),
       keyboard(new sdli::KeyboardInterface(10, 10)), ///TODO: make max_counts variable
+      keyboardDevice(),
+      mouse(new sdli::MouseInterface(10)),
+      mouseDevice(),
       gamecontrollers(10), ///TODO: make dynamic controller count
       hardwareToJoystickId(10),
-      keyboardDevice(),
       gamecontrollerDevices(10)
 {
     keyboardDevice.setKeyboard(keyboard.get());
@@ -89,6 +91,11 @@ sdli::Context* Processor::getContext(const sdli::ContextId& contextId)
 Device& Processor::getKeyboard()
 {
     return keyboardDevice;
+}
+
+Device&Processor::getMouse()
+{
+    return mouseDevice;
 }
 
 Device&Processor::getGamecontroller(unsigned int id)

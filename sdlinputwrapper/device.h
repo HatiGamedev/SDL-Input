@@ -10,6 +10,7 @@ class Device
 {
     sdli::Interface* interface {nullptr};
     sdli::KeyboardInterface* keyboardInterface {nullptr};
+    sdli::MouseInterface* mouseInterface {nullptr};
 
     std::stack<sdli::Context*> contextStack_;
 
@@ -18,6 +19,7 @@ class Device
 protected:
     void setInterface(sdli::Interface* interface);
     void setKeyboard(sdli::KeyboardInterface* keyboard);
+    void setMouseInterface(sdli::MouseInterface* mouse);
 
 public:
     Device();

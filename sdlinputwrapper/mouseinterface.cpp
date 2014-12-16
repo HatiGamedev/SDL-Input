@@ -38,27 +38,6 @@ void MouseInterface::push(unsigned int rawInput, int value)
 
 void MouseInterface::dispatch(Context& ctx)
 {
-    for(auto& raw : perFrameCaptures)
-    {
-        auto inputAction = ctx.keyAction(static_cast<SDL_Scancode>(raw.rawInput));
-        if(captureBuffer.at(inputAction) == nullptr)
-        {
-            captureBuffer.emplace(inputAction);
-        }
-        auto& logic = captureBuffer.get(inputAction);
-
-        logic.currentStatus = raw.pollResult;
-
-        if(::sdli::isPressed(logic))
-        {
-            ctx.fireCallbacks(inputAction, sdli::CallType::OnPress);
-        }
-
-        if(::sdli::isReleased(logic))
-        {
-            ctx.fireCallbacks(inputAction, sdli::CallType::OnRelease);
-        }
-    }
 }
 
 float MouseInterface::getRange(InputAxis axis)

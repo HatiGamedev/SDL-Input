@@ -49,6 +49,7 @@ class Processor;
 class Context;
 class Interface;
 class KeyboardInterface;
+class MouseInterface;
 class Device;
 
 using Callback = sdli::util::Lambda<void(void)>;

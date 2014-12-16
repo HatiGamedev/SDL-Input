@@ -50,10 +50,8 @@ struct SDL_Axis
     }
 
     SDL_Axis(SDLI_MouseAxis raw)
-        :rawMouseAxis(raw),
-         type(Type::Mouse)
-    {
-    }
+        :rawMouseAxis(static_cast<int>(raw)),
+         type(Type::Mouse) {}
 };
 } // sdli
 bool operator==(const sdli::SDL_Axis& a1, const sdli::SDL_Axis& a2);

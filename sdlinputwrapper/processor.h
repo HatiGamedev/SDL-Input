@@ -6,6 +6,7 @@
 
 #include <SDL2/SDL_events.h>
 #include "keyboardinterface.h"
+#include "mouseinterface.h"
 #include "sdli_definitions.h"
 #include "device.h"
 #include "util/array.h"
@@ -20,11 +21,17 @@ class Processor
 
 //    std::unique_ptr<sdli::Interface> keyboard;
     std::unique_ptr<sdli::KeyboardInterface> keyboard;
+    sdli::Device keyboardDevice;
+
+
+    std::unique_ptr<sdli::MouseInterface> mouse;
+    sdli::Device mouseDevice;
+
+
     sdli::util::IndexMap<Sint32, std::unique_ptr<sdli::Interface>> gamecontrollers;
 
     sdli::util::IndexMap<Sint32, Sint32> hardwareToJoystickId;
 
-    sdli::Device keyboardDevice;
 
     sdli::util::IndexMap<Sint32, std::unique_ptr<sdli::Device>> gamecontrollerDevices;
 
@@ -41,6 +48,7 @@ public:
     sdli::Context* getContext(const sdli::ContextId& contextId);
 
     sdli::Device& getKeyboard();
+    sdli::Device& getMouse();
     sdli::Device& getGamecontroller(unsigned int id);
 
     void deactivateDevice(const sdli::Device& d);
