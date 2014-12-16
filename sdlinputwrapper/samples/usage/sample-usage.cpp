@@ -63,6 +63,7 @@ int main(int argc, char** argv)
     auto inputproc = std::unique_ptr<sdli::Processor>(new sdli::Processor(SampleContext::MAX_COUNT));
 
     auto& keyboard = inputproc->getKeyboard();
+    auto& pad = inputproc->getGamecontroller(0);
 //    auto& pad = inputproc->getGamecontroller(0);
 
     SDL_Window* w = SDL_CreateWindow("SampleWindow", 0, 0, 800, 600, SDL_WindowFlags::SDL_WINDOW_SHOWN|SDL_WindowFlags::SDL_WINDOW_OPENGL);
@@ -82,6 +83,10 @@ int main(int argc, char** argv)
     ctx->mapAxis(SDL_SCANCODE_A, SDL_SCANCODE_D, SampleInputAxis::Horizontal);
     ctx->mapAxis(SDL_SCANCODE_S, SDL_SCANCODE_W, SampleInputAxis::Vertical);
 
+    ctx->mapAxis(SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_LEFT, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_RIGHT, SampleInputAxis::Horizontal);
+    ctx->mapAxis(SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_DOWN, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_UP, SampleInputAxis::Vertical);
+
+
     ctx->mapButton(SDL_SCANCODE_E, SampleInputActions::Shoot);
     ctx->mapButton(SDL_SCANCODE_F1, SampleInputActions::CHANGE_CTX);
 
@@ -97,6 +102,7 @@ int main(int argc, char** argv)
 
 
     keyboard.pushContext(ctx);
+    pad.pushContext(ctx);
     struct Test {
         float   x{0.0f},
                 y{0.0f};
@@ -120,8 +126,8 @@ int main(int argc, char** argv)
         inputproc->poll();
         inputproc->dispatch();
 
-        player.x += keyboard.getAxis(SampleInputAxis::Horizontal) * 0.001f;
-        player.y += keyboard.getAxis(SampleInputAxis::Vertical) * 0.001f;
+        player.x += pad.getAxis(SampleInputAxis::Horizontal) * 0.001f;
+        player.y += pad.getAxis(SampleInputAxis::Vertical) * 0.001f;
 
         if(keyboard.isPressed(SampleInputActions::Shoot))
         {

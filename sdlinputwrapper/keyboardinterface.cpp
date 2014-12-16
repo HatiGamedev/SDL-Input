@@ -33,7 +33,7 @@ void KeyboardInterface::poll(Context& ctx)
 
     for(;axisIt!=axisEnd;++axisIt)
     {
-        if(axisIt->idx.type == SDL_Axis::Type::Keyboard)
+        if(axisIt->idx.deviceType == SDL_Axis::Type::Keyboard)
         {
             auto data = axisIt->data;
 

@@ -60,11 +60,17 @@ public:
 
     sdli::ContextId id() const;
 
+    // Gamecontroller axis
     void mapAxis(SDL_GameControllerAxis raw, sdli::InputAxis axis, float normalize=1.0f);
-    void mapAxis(SDL_Scancode rawNegative, SDL_Scancode rawPositive, sdli::InputAxis axis);
-    void mapAxis(sdli::SDLI_MouseAxis raw, sdli::InputAxis axis);
+    void mapAxis(SDL_GameControllerButton rawNegative, SDL_GameControllerButton rawPositive, sdli::InputAxis axis);
 
-    // TODO: Mousewheel missing, mouse axes missing
+    // Keyboard axis
+    void mapAxis(SDL_Scancode rawNegative, SDL_Scancode rawPositive, sdli::InputAxis axis);
+
+    // Mouse axis
+    void mapAxis(sdli::SDLI_MouseAxis raw, sdli::InputAxis axis);
+    /// TODO: Mousewheel missing, mouse axes missing
+
 
     void mapButton(SDL_Scancode rawKey, sdli::InputAction action);
     void mapButton(SDL_GameControllerButton rawButton, sdli::InputAction action);

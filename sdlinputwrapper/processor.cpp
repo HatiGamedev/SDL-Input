@@ -50,6 +50,7 @@ Device& Processor::getControllerDevice(Sint32 hardwareId)
     }
     else
     {
+        gamecontrollers.get(hardwareToJoystickId.get(hardwareId)).get()->sdl_gameController = SDL_GameControllerOpen(hardwareId);
         gamecontrollerDevices.get(hardwareId)->setInterface(gamecontrollers.get(hardwareToJoystickId.get(hardwareId)).get());
 
     }
@@ -117,10 +118,10 @@ void Processor::handleSdlEvents(const SDL_Event& e)
         addController(e.cdevice.which);
         break;
     case SDL_CONTROLLERDEVICEREMOVED:
-        printf("Controller removed: %u\n", e.cdevice.which);
+        printf("Controller removed: %u\n", e.cdevice.which); // which := instance-id
         break;
     case SDL_CONTROLLERBUTTONDOWN:
-        printf("Controller button-down: %u\n", e.cdevice.which); // which := joystick-id
+        printf("Controller button-down: %u\n", e.cdevice.which); // which := instance-id
         if(gamecontrollers.at(e.cbutton.which)!=nullptr)
         {
             gamecontrollers.get(e.cbutton.which)->push(InputType::Gamecontroller, e.cbutton.button, e.cbutton.state);

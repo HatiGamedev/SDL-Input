@@ -3,31 +3,10 @@
 #include <iostream>
 #include <SDL2/SDL_events.h>
 
+#include "data/sdli_axis.h"
+
 namespace sdli {
 
-
-void Interface::handleKeyboard(const sdli::Context& ctx, const sdli::RawInputData& raw)
-{
-    auto inputAction = ctx.keyAction(static_cast<SDL_Scancode>(raw.rawInput));
-    if(captureBuffer.at(inputAction) == nullptr)
-    {
-        captureBuffer.emplace(inputAction);
-    }
-    auto& logic = captureBuffer.get(inputAction);
-
-    logic.currentStatus = raw.pollResult;
-
-    if(::sdli::isPressed(logic))
-    {
-        ctx.fireCallbacks(inputAction, sdli::CallType::OnPress);
-    }
-
-    if(::sdli::isReleased(logic))
-    {
-        ctx.fireCallbacks(inputAction, sdli::CallType::OnRelease);
-    }
-
-}
 
 void Interface::handleGamecontroller(const sdli::Context& ctx, const sdli::RawInputData& raw)
 {
@@ -62,9 +41,6 @@ Interface::Interface()
 
 void Interface::poll(sdli::Context& ctx)
 {
-    auto sdl_keystate = SDL_GetKeyboardState(NULL);
-
-    auto& keymap = ctx.keyboardKeys();
     auto& axisMap = ctx.axisMapping();
 
     auto axisIt = axisMap.begin();
@@ -72,58 +48,45 @@ void Interface::poll(sdli::Context& ctx)
 
     for(;axisIt!=axisEnd;++axisIt)
     {
-        if(axisIt->idx.type == SDL_Axis::Type::Keyboard)
+        if(axisIt->idx.deviceType == SDL_Axis::Type::Gamecontroller)
         {
+            auto pollResult = 0.0f;
             auto data = axisIt->data;
 
-            auto pollResult = 0.0f;
+            if(axisIt->idx.inputType == SDL_Axis::InputType::Digital)
+            {
+                auto neg = SDL_GameControllerGetButton(this->sdl_gameController, static_cast<SDL_GameControllerButton>(axisIt->idx.axis.rawNegative));
+                auto pos = SDL_GameControllerGetButton(this->sdl_gameController, static_cast<SDL_GameControllerButton>(axisIt->idx.axis.rawPositive));
 
-            auto neg = sdl_keystate[axisIt->idx.axis.rawNegative];
-            auto pos = sdl_keystate[axisIt->idx.axis.rawPositive];
+                if(neg == SDL_PRESSED)
+                {
+                    pollResult -= 1.0f;
+                }
+                if(pos == SDL_PRESSED)
+                {
+                    pollResult += 1.0f;
+                }
+                if(logicAnalogData.at(data->axis)==nullptr)
+                {
+                    logicAnalogData.emplace(data->axis);
+                }
 
-            if(neg == SDL_PRESSED)
-            {
-                pollResult -= 1.0f;
-            }
-            if(pos == SDL_PRESSED)
-            {
-                pollResult += 1.0f;
-            }
-            if(logicAnalogData.at(data->axis)==nullptr)
-            {
-                logicAnalogData.emplace(data->axis);
-            }
+                auto& currentStatus = logicAnalogData.get(data->axis).currentStatus;
+                if(currentStatus!=0.0f)
+                {
+                    currentStatus = sdli::clamp(currentStatus + pollResult, -1, 1) / data->normalize;
+                }
+                else
+                {
+                    currentStatus = pollResult / data->normalize;
+                }
 
-            auto& currentStatus = logicAnalogData.get(data->axis).currentStatus;
-            if(currentStatus!=0.0f)
-            {
-                currentStatus = sdli::clamp(currentStatus + pollResult, -1, 1) / data->normalize;
             }
             else
             {
-                currentStatus = pollResult / data->normalize;
+
             }
         }
-    }
-
-    auto it = keymap.begin();
-
-
-
-    for(;it!=keymap.end();++it)
-    {
-        auto state = sdl_keystate[it->idx];
-        auto action = *(it->data);
-        if(captureBuffer.at(action)==nullptr)
-        {
-            captureBuffer.emplace(action);
-        }
-
-        captureBuffer.get(action).previousStatus = captureBuffer.get(action).currentStatus;
-        captureBuffer.get(action).currentStatus = state;
-//        auto& data = logicDigitalData[*(it->data)];
-//        data.previousStatus = data.currentStatus;
-//        data.currentStatus = state;
     }
 }
 

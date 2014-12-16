@@ -28,12 +28,11 @@ private:
     sdli::util::IndexMap<InputAction, sdli::data::ActionState> currentState; 
 
 protected:
-
-
-    void handleKeyboard(const Context& ctx, const RawInputData& raw);
     void handleGamecontroller(const Context& ctx, const RawInputData& raw);
+    SDL_GameController* sdl_gameController{nullptr};
 
     friend class sdli::Device;
+    friend class sdli::Processor;
 
 public:
     Interface();

@@ -14,7 +14,7 @@ enum class SDLI_MouseAxis
 
 struct SDL_Axis
 {
-    struct KeyboardAxis
+    struct DigitalAxis
     {
         unsigned short rawNegative;
         unsigned short rawPositive;
@@ -22,7 +22,7 @@ struct SDL_Axis
 
     union
     {
-        KeyboardAxis axis;
+        DigitalAxis axis;
         unsigned int rawControllerAxis;
         unsigned int rawMouseAxis;
     };
@@ -30,20 +30,37 @@ struct SDL_Axis
     enum class Type
     {
         Keyboard,
-        GameController,
+        Gamecontroller,
         Mouse
-    } type;
+    } deviceType;
+
+    enum class InputType
+    {
+        Digital,
+        Analog
+    } inputType;
 
     SDL_Axis()
         : rawControllerAxis(SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_INVALID),
-          type(Type::GameController) {}
+          deviceType(Type::Gamecontroller),
+          inputType(InputType::Analog) {}
 
     SDL_Axis(SDL_GameControllerAxis raw)
         : rawControllerAxis(raw),
-          type(Type::GameController) {}
+          deviceType(Type::Gamecontroller),
+          inputType(InputType::Analog) {}
+
+    SDL_Axis(SDL_GameControllerButton negative, SDL_GameControllerButton positive)
+        : deviceType(Type::Gamecontroller),
+          inputType(InputType::Digital)
+    {
+        axis.rawNegative = negative;
+        axis.rawPositive = positive;
+    }
 
     SDL_Axis(SDL_Scancode negative, SDL_Scancode positive)
-        : type(Type::Keyboard)
+        : deviceType(Type::Keyboard),
+          inputType(InputType::Digital)
     {
         axis.rawNegative = negative;
         axis.rawPositive = positive;
@@ -51,7 +68,8 @@ struct SDL_Axis
 
     SDL_Axis(SDLI_MouseAxis raw)
         :rawMouseAxis(static_cast<int>(raw)),
-         type(Type::Mouse) {}
+         deviceType(Type::Mouse),
+         inputType(InputType::Analog) {}
 };
 } // sdli
 bool operator==(const sdli::SDL_Axis& a1, const sdli::SDL_Axis& a2);

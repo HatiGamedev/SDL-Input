@@ -31,7 +31,6 @@ Device::Device()
 void Device::pushContext(Context* ctx)
 {
     contextStack_.push(ctx);
-    printf("push %d\n", ctx->id());
 }
 
 Context* Device::currentContext()
@@ -58,24 +57,23 @@ Context* Device::popContext()
 
 void Device::poll()
 {
-
+    _DEVICE_GUARD_(!contextStack_.empty(), ;);
     if(keyboardInterface)
     {
         keyboardInterface->poll(*contextStack_.top());
     }
     _DEVICE_GUARD_(interface, ;);
-    assert(!contextStack_.empty());
     interface->poll(*contextStack_.top());
 }
 
 void Device::dispatch()
 {
+    _DEVICE_GUARD_(!contextStack_.empty(), ;);
     if(keyboardInterface)
     {
         keyboardInterface->dispatch(*contextStack_.top());
     }
     _DEVICE_GUARD_(interface, ;);
-    assert(!contextStack_.empty());
     interface->dispatch(*contextStack_.top());
 }
 
