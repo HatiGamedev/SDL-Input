@@ -3,17 +3,16 @@ cmake_minimum_required(VERSION 2.8)
 aux_source_directory(. SDLINPUTWRAPPER_LIB_SRC_LIST)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11") # enable C++11
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14") # enable C++14
 
 SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
 SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 
-include(FindPkgConfig)
-pkg_search_module(SDL2 REQUIRED sdl2)
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${sdlinputwrapper_SOURCE_DIR}/cmake")
+FIND_PACKAGE(SDL2 REQUIRED)
 
 INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${SDL2_INCLUDE_DIRS}
+    ${SDL2_INCLUDE_DIR}
 )
 
 #add_subdirectory(util)
@@ -43,6 +42,6 @@ ENDIF()
 
 add_library(${PROJECT_NAME} ${SDLINPUTWRAPPER_LIB_SRC_LIST})
 target_link_libraries(${PROJECT_NAME}
-    ${SDL2_LIBRARIES}
+    ${SDL2_LIBRARY}
 )
 
