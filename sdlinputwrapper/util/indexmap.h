@@ -125,7 +125,7 @@ public:
         return indices.size<Index>();
     }
 
-    static constexpr unsigned int BytesOfIndexMap(unsigned int size)
+    static /*constexpr*/ unsigned int BytesOfIndexMap(unsigned int size)
     {
         return LinearAllocator::BytesOfCount<Index>(size)+LinearAllocator::BytesOfCount<T>(size);
     }

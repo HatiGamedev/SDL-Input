@@ -1,12 +1,13 @@
 #include "sdli_definitions.h"
-
+#include <algorithm>
+#include <math.h>
 
 namespace sdli
 {
 
-float clamp(float cur, float min, float max)
+float clamp(float cur, float min_, float max_)
 {
-    return std::max(std::min(cur, max), min);
+    return std::max(std::min(cur, max_), min_);
 }
 
 bool isPressed(const LogicDigitalData& d)

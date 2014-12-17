@@ -154,7 +154,7 @@ Device&Processor::getGamecontroller(unsigned int id)
 
 Device&Processor::getDevice(InputType type)
 {
-
+    return keyboardDevice;
 }
 
 void Processor::handleSdlEvents(const SDL_Event& e)

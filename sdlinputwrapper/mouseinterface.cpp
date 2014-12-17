@@ -1,7 +1,7 @@
 #include "mouseinterface.h"
 
-#include <SDL_mouse.h>
-#include <SDL_events.h>
+#include <SDL2/SDL_mouse.h>
+#include <SDL2/SDL_events.h>
 
 #include "context.h"
 
