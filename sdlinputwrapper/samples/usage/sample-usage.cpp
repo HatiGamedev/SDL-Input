@@ -70,43 +70,66 @@ int main(int argc, char** argv)
 
     auto sdl_glContext = SDL_GL_CreateContext(w);
 
-    float aspectRatio = 600.0f/800.0f;
-
-    float dx = 0.025f * aspectRatio;
-    float dy = 0.025f;
-    float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 
     auto ctx = inputproc->createContext(SampleContext::Game);
     auto climb = inputproc->createContext(SampleContext::GameMod);
-
+    /* [BEG] Bind Axes */
     ctx->mapAxis(SDL_SCANCODE_LEFT, SDL_SCANCODE_RIGHT, SampleInputAxis::Horizontal);
     ctx->mapAxis(SDL_SCANCODE_A, SDL_SCANCODE_D, SampleInputAxis::Horizontal);
-    ctx->mapAxis(SDL_SCANCODE_S, SDL_SCANCODE_W, SampleInputAxis::Vertical);
+    ctx->mapAxis(SDL_SCANCODE_W, SDL_SCANCODE_S, SampleInputAxis::Vertical);
 
     ctx->mapAxis(SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_LEFT, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_RIGHT, SampleInputAxis::Horizontal);
-    ctx->mapAxis(SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_DOWN, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_UP, SampleInputAxis::Vertical);
+    ctx->mapAxis(SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_UP, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_DOWN, SampleInputAxis::Vertical);
+    ctx->mapAxis(SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_LEFTX, SampleInputAxis::Horizontal);
+    ctx->mapAxis(SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_LEFTY, SampleInputAxis::Vertical);
+    /* [END] Bind Axes */
 
 
+    /* [BEG] Bind Buttons */
     ctx->mapButton(SDL_SCANCODE_E, SampleInputActions::Shoot);
-    ctx->mapButton(SDL_SCANCODE_F1, SampleInputActions::CHANGE_CTX);
+    ctx->mapButton(SDL_SCANCODE_F, SampleInputActions::CHANGE_CTX);
 
-    ctx->addCallback(sdli::CallType::OnPress, SampleInputActions::CHANGE_CTX, [=,&keyboard](){
+    ctx->mapButton(SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_A, SampleInputActions::Shoot);
+    ctx->mapButton(SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_B, SampleInputActions::CHANGE_CTX);
+
+    /* [END] Bind Buttons */
+
+    ctx->addCallback(sdli::CallType::OnPress, SampleInputActions::CHANGE_CTX, [=,&keyboard, &pad](){
         keyboard.pushContext(climb);
+        pad.pushContext(climb);
     });
 
 
-    climb->mapButton(SDL_SCANCODE_F1, SampleInputActions::CHANGE_CTX);
-    climb->addCallback(sdli::CallType::OnRelease, SampleInputActions::CHANGE_CTX, [=,&keyboard](){
+    climb->mapButton(SDL_SCANCODE_F, SampleInputActions::CHANGE_CTX);
+    climb->mapButton(SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_B, SampleInputActions::CHANGE_CTX);
+    climb->addCallback(sdli::CallType::OnRelease, SampleInputActions::CHANGE_CTX, [=,&keyboard, &pad](){
         keyboard.popContext();
+        pad.popContext();
     });
 
 
     keyboard.pushContext(ctx);
     pad.pushContext(ctx);
+
+    /* Sample Data */
+    const int trailCount = 100;
+    float aspectRatio = 600.0f/800.0f;
+
+    float dx = 0.025f * aspectRatio;
+    float dy = 0.025f;
+    float color[trailCount][4];
+    color[0][0] = 1.0f; color[0][1] = 1.0f; color[0][2] = 1.0f; color[0][3] = 1.0f;
+
+    for(int i=1;i<trailCount;++i)
+    {
+        color[i][0] = 0.5f + i*(0.5f/trailCount); color[i][1] = 1.0f; color[i][2] = 1.0f; color[i][3] = 1.0f - i*(1.0f/trailCount);
+    }
+
     struct Test {
         float   x{0.0f},
                 y{0.0f};
-    } player;
+    } player[trailCount];
+    float add = -0.01f;
 
 
     SDL_Event event;
@@ -126,31 +149,58 @@ int main(int argc, char** argv)
         inputproc->poll();
         inputproc->dispatch();
 
-        player.x += pad.getAxis(SampleInputAxis::Horizontal) * 0.001f;
-        player.y += pad.getAxis(SampleInputAxis::Vertical) * 0.001f;
+        for(int i=trailCount-1;i>0;--i)
+        {
+            player[i].x = player[i-1].x; player[i].y = player[i-1].y;
 
-        if(keyboard.isPressed(SampleInputActions::Shoot))
-        {
-            color[1] = 0.5f;
-        }
-        if(keyboard.isReleased(SampleInputActions::Shoot))
-        {
-            color[1] = 1.0f;
         }
 
-        color[0] = keyboard.isDown(SampleInputActions::CHANGE_CTX)?1.0f:0.0f;
+
+
+        float movDir[2];
+        movDir[0] = pad.getAxis(SampleInputAxis::Horizontal) + keyboard.getAxis(SampleInputAxis::Horizontal);
+        movDir[1] = pad.getAxis(SampleInputAxis::Vertical) + keyboard.getAxis(SampleInputAxis::Vertical);
+        float len = sqrtf((movDir[0]*movDir[0])+(movDir[1]*movDir[1]));
+
+
+        if(!isnanf(len) && len!=0.0f) // Character Control
+        {
+            player[0].x += (movDir[0] / len) * 0.001f * fabs(movDir[0]);
+            player[0].y -= (movDir[1] / len) * 0.001f * fabs(movDir[1]);
+        }
+
+        if(pad.isPressed(SampleInputActions::Shoot) || keyboard.isPressed(SampleInputActions::Shoot))
+        {
+            printf("shoot\n");
+            add = 0.001f;
+        }
+        if(pad.isReleased(SampleInputActions::Shoot) || keyboard.isReleased(SampleInputActions::Shoot))
+        {
+            printf("unshoot\n");
+            add = -0.001f;
+        }
+
+        color[0][1] = sdli::clamp(color[0][1] + add, 0.5f, 1.0f);
+        color[0][0] = keyboard.isDown(SampleInputActions::CHANGE_CTX)||pad.isDown(SampleInputActions::CHANGE_CTX)?1.0f:0.0f;
 
         glClearColor(0,0,0,1);
         glClear(GL_DEPTH_BUFFER_BIT|GL_COLOR_BUFFER_BIT);
 
+        glEnable(GL_BLEND);
+        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        glColor4fv((const GLfloat*)color);
-        glBegin(GL_TRIANGLE_STRIP);
-            glVertex2f(player.x - dx, player.y - dy);
-            glVertex2f(player.x + dx, player.y - dy);
-            glVertex2f(player.x - dx, player.y + dy);
-            glVertex2f(player.x + dx, player.y + dy);
-        glEnd();
+//        int i = 0;
+        for(int i=trailCount-1;i>=0;--i)
+        {
+            glColor4fv((const GLfloat*)color[0]);
+            glBegin(GL_TRIANGLE_STRIP);
+                glVertex2f(player[i].x - dx, player[i].y - dy);
+                glVertex2f(player[i].x + dx, player[i].y - dy);
+                glVertex2f(player[i].x - dx, player[i].y + dy);
+                glVertex2f(player[i].x + dx, player[i].y + dy);
+            glEnd();
+        }
+        glDisable(GL_BLEND);
 
         inputproc->swap();
         SDL_GL_SwapWindow(w);

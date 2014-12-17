@@ -70,22 +70,25 @@ void Interface::poll(sdli::Context& ctx)
                 {
                     logicAnalogData.emplace(data->axis);
                 }
-
-                auto& currentStatus = logicAnalogData.get(data->axis).currentStatus;
-                if(currentStatus!=0.0f)
-                {
-                    currentStatus = sdli::clamp(currentStatus + pollResult, -1, 1) / data->normalize;
-                }
-                else
-                {
-                    currentStatus = pollResult / data->normalize;
-                }
-
             }
             else
             {
+                auto val = SDL_GameControllerGetAxis(this->sdl_gameController,
+                                                 static_cast<SDL_GameControllerAxis>(axisIt->idx.rawControllerAxis));
 
+                pollResult = val / 32767.0f;
             }
+
+            auto& currentStatus = logicAnalogData.get(data->axis).currentStatus;
+            if(currentStatus!=0.0f)
+            {
+                currentStatus = sdli::clamp(currentStatus + pollResult, -1, 1) / data->normalize;
+            }
+            else
+            {
+                currentStatus = pollResult / data->normalize;
+            }
+
         }
     }
 }

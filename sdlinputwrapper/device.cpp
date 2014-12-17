@@ -31,6 +31,7 @@ Device::Device()
 void Device::pushContext(Context* ctx)
 {
     contextStack_.push(ctx);
+    printf("%u: Push-Context: %d\n", this, ctx->id());
 }
 
 Context* Device::currentContext()
@@ -52,6 +53,7 @@ Context* Device::popContext()
 
     auto ctx = contextStack_.top();
     contextStack_.pop();
+    printf("%u: Pop-Context: %d\n", this, ctx->id());
     return ctx;
 }
 

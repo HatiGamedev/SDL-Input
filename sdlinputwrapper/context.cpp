@@ -20,6 +20,7 @@ ContextId Context::id() const
 void Context::mapAxis(SDL_GameControllerAxis raw, InputAxis axis, float normalize)
 {
     assert(raw != SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_INVALID);
+    axisMapping_.emplace({raw}, axis, normalize);
 }
 
 void Context::mapAxis(SDL_GameControllerButton rawNegative, SDL_GameControllerButton rawPositive, sdli::InputAxis axis)

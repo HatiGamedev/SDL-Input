@@ -39,9 +39,14 @@ struct LogicAnalogData
  */
 enum class InputType
 {
-    Keyboard = 1,
-    Gamecontroller = 2,
-    Keyboard_AND_Gamecontroller = InputType::Keyboard | InputType::Gamecontroller
+    Keyboard            = 1<<0,
+    Gamecontroller      = 1<<1,
+    Mouse               = 1<<2,
+
+    Keyboard_AND_Mouse          = InputType::Keyboard | InputType::Mouse,
+    Keyboard_AND_Gamecontroller = InputType::Keyboard | InputType::Gamecontroller,
+
+    ALL                         = InputType::Gamecontroller | InputType::Keyboard | InputType::Mouse
 };
 
 // Forward declarations

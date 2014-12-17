@@ -8,6 +8,46 @@
 namespace sdli
 {
 
+Interface*Processor::getControllerInterface(Sint32 controllerId)
+{
+    auto controller = SDL_GameControllerOpen(controllerId);
+
+    printf("attached: %i\n", SDL_GameControllerGetAttached(controller));
+    printf("evenstate: %i\n", SDL_GameControllerEventState(SDL_QUERY));  /* prints 0 */
+
+    unsigned int joystickId = SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(controller));
+    printf("joystick-id: %u\n", joystickId);
+
+    bool isReconnect = false;
+    Sint32 prevJoystickId = 0;
+
+    if(hardwareIdToJoystickId.at(controllerId)==nullptr)
+    {
+        hardwareIdToJoystickId.emplace(controllerId, joystickId);
+        printf("link %d:%d\n", controllerId, joystickId);
+    }
+    else
+    {
+        prevJoystickId = hardwareIdToJoystickId.get(controllerId);
+        hardwareIdToJoystickId.get(controllerId) = joystickId;
+        printf("relink %d:%d\n", controllerId, hardwareIdToJoystickId.get(controllerId));
+        isReconnect = true;
+    }
+
+
+    if(!isReconnect && gamecontrollerInterfaces.at(hardwareIdToJoystickId.get(controllerId))==nullptr)
+    {
+        printf("creating new interface ..@%d\n", hardwareIdToJoystickId.get(controllerId));
+        gamecontrollerInterfaces.emplace(hardwareIdToJoystickId.get(controllerId), new sdli::Interface);
+    }
+    else
+    {
+        gamecontrollerInterfaces.move(prevJoystickId, hardwareIdToJoystickId.get(controllerId));
+        printf("Recycle existing device! Move from %d to %d\n", prevJoystickId, hardwareIdToJoystickId.get(controllerId));
+    }
+    return gamecontrollerInterfaces.get(hardwareIdToJoystickId.get(controllerId)).get();
+}
+
 void Processor::addController(Sint32 controllerId)
 {
     auto controller = SDL_GameControllerOpen(controllerId);
@@ -17,41 +57,49 @@ void Processor::addController(Sint32 controllerId)
 
     unsigned int joystickId = SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(controller));
     printf("joystick-id: %u\n", joystickId);
-    if(hardwareToJoystickId.at(controllerId)==nullptr)
+
+    bool isReconnect = false;
+    Sint32 prevJoystickId = 0;
+
+    if(hardwareIdToJoystickId.at(controllerId)==nullptr)
     {
-        hardwareToJoystickId.emplace(controllerId, joystickId);
+        hardwareIdToJoystickId.emplace(controllerId, joystickId);
         printf("link %d:%d\n", controllerId, joystickId);
     }
     else
     {
-        hardwareToJoystickId.get(controllerId) = joystickId;
-        printf("relink %d:%d\n", controllerId, joystickId);
+        prevJoystickId = hardwareIdToJoystickId.get(controllerId);
+        hardwareIdToJoystickId.get(controllerId) = joystickId;
+        printf("relink %d:%d\n", controllerId, hardwareIdToJoystickId.get(controllerId));
+        isReconnect = true;
     }
 
-    if(gamecontrollers.at(joystickId)==nullptr)
+
+    if(!isReconnect && gamecontrollerInterfaces.at(hardwareIdToJoystickId.get(controllerId))==nullptr)
     {
-        std::cout << "creating new interface .." << std::endl;
-        gamecontrollers.emplace(joystickId, new sdli::Interface);
+        printf("creating new interface ..@%d\n", hardwareIdToJoystickId.get(controllerId));
+        gamecontrollerInterfaces.emplace(hardwareIdToJoystickId.get(controllerId), new sdli::Interface);
     }
     else
     {
-        std::cout << "recycle old interface" <<std::endl;
+        gamecontrollerInterfaces.move(prevJoystickId, hardwareIdToJoystickId.get(controllerId));
+        printf("Recycle existing device! Move from %d to %d\n", prevJoystickId, hardwareIdToJoystickId.get(controllerId));
     }
     getControllerDevice(controllerId);
-
 }
 
 Device& Processor::getControllerDevice(Sint32 hardwareId)
 {
     if(gamecontrollerDevices.at(hardwareId) == nullptr) // non existend -> emplace
     {
+        printf("Create empty device %d\n", hardwareId );
         gamecontrollerDevices.emplace(hardwareId, new sdli::Device()); // create unlinked device
         devices.push_back(&(*gamecontrollerDevices.get(hardwareId)));
     }
     else
     {
-        gamecontrollers.get(hardwareToJoystickId.get(hardwareId)).get()->sdl_gameController = SDL_GameControllerOpen(hardwareId);
-        gamecontrollerDevices.get(hardwareId)->setInterface(gamecontrollers.get(hardwareToJoystickId.get(hardwareId)).get());
+        gamecontrollerInterfaces.get(hardwareIdToJoystickId.get(hardwareId)).get()->sdl_gameController = SDL_GameControllerOpen(hardwareId);
+        gamecontrollerDevices.get(hardwareId)->setInterface(gamecontrollerInterfaces.get(hardwareIdToJoystickId.get(hardwareId)).get());
 
     }
 
@@ -66,8 +114,8 @@ Processor::Processor(unsigned int maxContexts)
       keyboardDevice(),
       mouse(new sdli::MouseInterface(10)),
       mouseDevice(),
-      gamecontrollers(10), ///TODO: make dynamic controller count
-      hardwareToJoystickId(10),
+      gamecontrollerInterfaces(10), ///TODO: make dynamic controller count
+      hardwareIdToJoystickId(10),
       gamecontrollerDevices(10)
 {
     keyboardDevice.setKeyboard(keyboard.get());
@@ -104,6 +152,11 @@ Device&Processor::getGamecontroller(unsigned int id)
     return getControllerDevice(id);
 }
 
+Device&Processor::getDevice(InputType type)
+{
+
+}
+
 void Processor::handleSdlEvents(const SDL_Event& e)
 {
     switch(e.type)
@@ -111,26 +164,41 @@ void Processor::handleSdlEvents(const SDL_Event& e)
     case SDL_KEYDOWN:
     case SDL_KEYUP:
 //        printf("Key-input: %d : %d", e.key.keysym.scancode, e.key.state);
-        keyboard->push(e.key.keysym.scancode, e.key.state);
+        if(sdlEventFlag & sdli::ProcessorEventFlags::Keyboard)
+        {
+            keyboard->push(e.key.keysym.scancode, e.key.state);
+        }
         break;
     case SDL_CONTROLLERDEVICEADDED:
-        printf("Controller added: %u\n", e.cdevice.which); // which := hardware-id
-        addController(e.cdevice.which);
+        if(sdlEventFlag & sdli::ProcessorEventFlags::ControllerConnect)
+        {
+            printf("Controller added: %u\n", e.cdevice.which); // which := hardware-id
+            addController(e.cdevice.which);
+        }
         break;
     case SDL_CONTROLLERDEVICEREMOVED:
-        printf("Controller removed: %u\n", e.cdevice.which); // which := instance-id
+        if(sdlEventFlag & sdli::ProcessorEventFlags::ControllerConnect)
+        {
+            printf("Controller removed: %u\n", e.cdevice.which); // which := instance-id
+        }
         break;
     case SDL_CONTROLLERBUTTONDOWN:
-        printf("Controller button-down: %u\n", e.cdevice.which); // which := instance-id
-        if(gamecontrollers.at(e.cbutton.which)!=nullptr)
+        if(sdlEventFlag & sdli::ProcessorEventFlags::ControllerButtons)
         {
-            gamecontrollers.get(e.cbutton.which)->push(InputType::Gamecontroller, e.cbutton.button, e.cbutton.state);
+//            printf("Controller button-down: %u\n", e.cdevice.which); // which := instance-id
+            if(gamecontrollerInterfaces.at(e.cbutton.which)!=nullptr)
+            {
+                gamecontrollerInterfaces.get(e.cbutton.which)->push(InputType::Gamecontroller, e.cbutton.button, e.cbutton.state);
+            }
         }
         break;
     case SDL_CONTROLLERBUTTONUP:
-        if(gamecontrollers.at(e.cbutton.which)!=nullptr)
+        if(sdlEventFlag & sdli::ProcessorEventFlags::ControllerButtons)
         {
-            gamecontrollers.get(e.cbutton.which)->push(InputType::Gamecontroller, e.cbutton.button, e.cbutton.state);
+            if(gamecontrollerInterfaces.at(e.cbutton.which)!=nullptr)
+            {
+                gamecontrollerInterfaces.get(e.cbutton.which)->push(InputType::Gamecontroller, e.cbutton.button, e.cbutton.state);
+            }
         }
         break;
     }

@@ -113,6 +113,7 @@ void KeyboardInterface::dispatch(Context& ctx)
             ctx.fireCallbacks(inputAction, sdli::CallType::OnRelease);
         }
     }
+    perFrameCaptures.clear();
 }
 
 float KeyboardInterface::getRange(InputAxis axis)

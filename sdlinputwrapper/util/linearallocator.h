@@ -71,13 +71,13 @@ public:
         return (pEnd - pBegin)/sizeof(T);
     }
 
-    unsigned int size()
+    unsigned int size() const
     {
         return (current - pBegin);
     }
 
     template<typename T>
-    unsigned int size()
+    unsigned int size() const
     {
         return (current - pBegin) / sizeof(T);
     }

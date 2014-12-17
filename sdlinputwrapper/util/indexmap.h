@@ -118,7 +118,11 @@ public:
                 break;
             }
         }
+    }
 
+    unsigned int size() const
+    {
+        return indices.size<Index>();
     }
 
     static constexpr unsigned int BytesOfIndexMap(unsigned int size)
