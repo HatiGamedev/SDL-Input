@@ -99,7 +99,7 @@ int main(int argc, char** argv)
     /** END Mappings **/
 
 
-    SDL_Window* w = SDL_CreateWindow("SampleWindow", 0, 0, 256, 256, SDL_WindowFlags::SDL_WINDOW_SHOWN|SDL_WindowFlags::SDL_WINDOW_OPENGL);
+    SDL_Window* w = SDL_CreateWindow("SampleWindow", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 256, 256, SDL_WindowFlags::SDL_WINDOW_SHOWN|SDL_WindowFlags::SDL_WINDOW_OPENGL);
 
     auto sdl_glContext = SDL_GL_CreateContext(w);
 
