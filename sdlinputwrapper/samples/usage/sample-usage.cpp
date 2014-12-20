@@ -9,6 +9,7 @@
 #include <sdlinputwrapper/callback.h>
 
 #include <GL/gl.h>
+#include <math.h>
 
 enum SampleInputActions
 {
@@ -66,7 +67,7 @@ int main(int argc, char** argv)
     auto& pad = inputproc->getGamecontroller(0);
 //    auto& pad = inputproc->getGamecontroller(0);
 
-    SDL_Window* w = SDL_CreateWindow("SampleWindow", 0, 0, 800, 600, SDL_WindowFlags::SDL_WINDOW_SHOWN|SDL_WindowFlags::SDL_WINDOW_OPENGL);
+    SDL_Window* w = SDL_CreateWindow("SampleWindow", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WindowFlags::SDL_WINDOW_SHOWN|SDL_WindowFlags::SDL_WINDOW_OPENGL);
 
     auto sdl_glContext = SDL_GL_CreateContext(w);
 
@@ -163,7 +164,7 @@ int main(int argc, char** argv)
         float len = sqrtf((movDir[0]*movDir[0])+(movDir[1]*movDir[1]));
 
 
-        if(!isnanf(len) && len!=0.0f) // Character Control
+        if(!isnan(len) && len!=0.0f) // Character Control
         {
             player[0].x += (movDir[0] / len) * 0.002f * fabs(movDir[0]);
 

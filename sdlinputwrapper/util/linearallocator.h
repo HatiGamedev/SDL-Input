@@ -31,7 +31,7 @@ public:
     }
 
     template<typename T>
-    static constexpr unsigned int BytesOfCount(unsigned int size)
+    static /*constexpr*/ unsigned int BytesOfCount(unsigned int size)
     {
         return sizeof(T) * size;
     }
