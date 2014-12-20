@@ -112,7 +112,7 @@ int main(int argc, char** argv)
     pad.pushContext(ctx);
 
     /* Sample Data */
-    const int trailCount = 100;
+    const int trailCount = 300;
     float aspectRatio = 600.0f/800.0f;
 
     float dx = 0.025f * aspectRatio;
@@ -122,7 +122,7 @@ int main(int argc, char** argv)
 
     for(int i=1;i<trailCount;++i)
     {
-        color[i][0] = 0.5f + i*(0.5f/trailCount); color[i][1] = 1.0f; color[i][2] = 1.0f; color[i][3] = 1.0f - i*(1.0f/trailCount);
+        color[i][0] = 0.5f + i*(1.5f/trailCount); color[i][1] = 1.0f; color[i][2] = 1.0f; color[i][3] = 1.0f - i*(2.0f/trailCount);
     }
 
     struct Test {
@@ -165,9 +165,10 @@ int main(int argc, char** argv)
 
         if(!isnanf(len) && len!=0.0f) // Character Control
         {
-            player[0].x += (movDir[0] / len) * 0.001f * fabs(movDir[0]);
-            player[0].y -= (movDir[1] / len) * 0.001f * fabs(movDir[1]);
+            player[0].x += (movDir[0] / len) * 0.002f * fabs(movDir[0]);
+
         }
+        player[0].y = sdli::clamp(player[0].y - (9.81f) * 0.002f, -1.0f + dy, 1.0f);
 
         if(pad.isPressed(SampleInputActions::Shoot) || keyboard.isPressed(SampleInputActions::Shoot))
         {
@@ -192,12 +193,12 @@ int main(int argc, char** argv)
 //        int i = 0;
         for(int i=trailCount-1;i>=0;--i)
         {
-            glColor4fv((const GLfloat*)color[0]);
+            glColor4fv((const GLfloat*)color[i]);
             glBegin(GL_TRIANGLE_STRIP);
-                glVertex2f(player[i].x - dx, player[i].y - dy);
-                glVertex2f(player[i].x + dx, player[i].y - dy);
-                glVertex2f(player[i].x - dx, player[i].y + dy);
-                glVertex2f(player[i].x + dx, player[i].y + dy);
+            glVertex2f(player[i].x - dx * (1.0f - i*(1.0f/trailCount)), player[i].y - dy * (1.0f - i*(1.0f/trailCount)));
+            glVertex2f(player[i].x + dx * (1.0f - i*(1.0f/trailCount)), player[i].y - dy * (1.0f - i*(1.0f/trailCount)));
+            glVertex2f(player[i].x - dx * (1.0f - i*(1.0f/trailCount)), player[i].y + dy * (1.0f - i*(1.0f/trailCount)));
+            glVertex2f(player[i].x + dx * (1.0f - i*(1.0f/trailCount)), player[i].y + dy * (1.0f - i*(1.0f/trailCount)));
             glEnd();
         }
         glDisable(GL_BLEND);
