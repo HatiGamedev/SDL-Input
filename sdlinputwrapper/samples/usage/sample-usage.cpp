@@ -166,10 +166,12 @@ int main(int argc, char** argv)
 
         if(!isnan(len) && len!=0.0f) // Character Control
         {
-            player[0].x += (movDir[0] / len) * 0.002f * fabs(movDir[0]);
+            float dmx = (movDir[0] / len) * 0.002f * fabs(movDir[0]);
+            float dmy = (movDir[1] / len) * 0.002f * fabs(movDir[1]);
+            player[0].x = sdli::clamp(player[0].x + dmx, -1.0f +dx, 1.0f -dx);
+            player[0].y = sdli::clamp(player[0].y - dmy, -1.0f + dy, 1.0f -dy);
 
         }
-        player[0].y = sdli::clamp(player[0].y - (9.81f) * 0.002f, -1.0f + dy, 1.0f);
 
         if(pad.isPressed(SampleInputActions::Shoot) || keyboard.isPressed(SampleInputActions::Shoot))
         {
