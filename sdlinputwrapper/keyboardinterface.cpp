@@ -71,6 +71,19 @@ void KeyboardInterface::poll(Context& ctx)
 
 
 
+    std::vector<unsigned int> polled(captureBuffer.size());
+    auto hasPolled = [](unsigned int id, std::vector<unsigned int>& v)
+    {
+        auto it = v.cbegin();
+        auto end = v.cend();
+        for(;it!=end;++it)
+        {
+            if(id == *it)
+                return true;
+        }
+        return false;
+    };
+
     for(;it!=keymap.end();++it)
     {
         auto state = sdl_keystate[it->idx];
@@ -80,8 +93,16 @@ void KeyboardInterface::poll(Context& ctx)
             captureBuffer.emplace(action);
         }
 
-        captureBuffer.get(action).previousStatus = captureBuffer.get(action).currentStatus;
-        captureBuffer.get(action).currentStatus = state;
+        if(hasPolled(action, polled))
+        {
+            captureBuffer.get(action).currentStatus |= state;
+        }
+        else
+        {
+            captureBuffer.get(action).previousStatus = captureBuffer.get(action).currentStatus;
+            captureBuffer.get(action).currentStatus = state;
+            polled.push_back(action);
+        }
     }
 }
 
