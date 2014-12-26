@@ -12,6 +12,13 @@ protected:
     char* current;
 public:
     LinearAllocator(unsigned int size);
+    template<typename T>
+    LinearAllocator(unsigned int size)
+        : BaseArray(sizeof(T) * size),
+          current(BaseArray::pBegin)
+    {
+    }
+
     LinearAllocator(char* begin, char* end);
 
     LinearAllocator(const LinearAllocator&) =delete;
