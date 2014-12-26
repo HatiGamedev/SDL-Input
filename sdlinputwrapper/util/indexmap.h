@@ -22,7 +22,11 @@ class IndexMap
 
 public:
     IndexMap(unsigned int size)
-        : indices(LinearAllocator::BytesOfCount<Index>(size)),
+        : /*memoryArea(new char[LinearAllocator::BytesOfCount<Index>(size) + LinearAllocator::BytesOfCount<T>(size)]),*/
+          /*indices(memoryArea, (memoryArea+LinearAllocator::BytesOfCount<Index>(size))),
+          data((memoryArea + LinearAllocator::BytesOfCount<Index>(size) + 1),
+               (memoryArea + LinearAllocator::BytesOfCount<Index>(size) + LinearAllocator::BytesOfCount<T>(size)))*/
+          indices(LinearAllocator::BytesOfCount<Index>(size)),
           data(LinearAllocator::BytesOfCount<T>(size))
     {
     }
