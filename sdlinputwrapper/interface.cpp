@@ -4,6 +4,7 @@
 #include <SDL2/SDL_events.h>
 
 #include "data/sdli_axis.h"
+#include <math.h>
 
 namespace sdli {
 
@@ -77,6 +78,10 @@ void Interface::poll(sdli::Context& ctx)
                                                  static_cast<SDL_GameControllerAxis>(axisIt->idx.rawControllerAxis));
 
                 pollResult = val / 32767.0f;
+                if(pollResult < 0.001f && pollResult > -0.001f)
+                {
+                    pollResult = 0.0f;
+                }
             }
 
             auto& currentStatus = logicAnalogData.get(data->axis).currentStatus;
