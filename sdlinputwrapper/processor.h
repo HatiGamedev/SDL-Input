@@ -30,7 +30,6 @@ class Processor
 {
     uint32_t sdlEventFlag = sdli::ProcessorEventFlags::BASIC;
 
-    /// TODO: proposal: linearilize
     sdli::util::Array<sdli::Context> contextMap;
 
 //    std::unique_ptr<sdli::Interface> keyboard;
