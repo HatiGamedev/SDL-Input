@@ -14,7 +14,8 @@ BaseArray::BaseArray(unsigned int size)
 }
 
 BaseArray::BaseArray(char* begin, char* end)
-    : pBegin(begin),
+    : managed_memory(false),
+      pBegin(begin),
       pEnd(end)
 {
     assert(size()!=0);
@@ -23,7 +24,10 @@ BaseArray::BaseArray(char* begin, char* end)
 
 BaseArray::~BaseArray()
 {
-    delete [] pBegin;
+    if(managed_memory)
+    {
+        delete [] pBegin;
+    }
 }
 
 char& BaseArray::operator[](unsigned int idx)

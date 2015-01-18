@@ -20,6 +20,8 @@ public:
     LinearAllocator& operator=(const LinearAllocator&) =delete;
     LinearAllocator& operator=(const LinearAllocator&&) =delete;
 
+    ~LinearAllocator();
+
     void* allocate(unsigned int size);
     void free(void* ptr);
     void reset(void);

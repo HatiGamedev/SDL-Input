@@ -17,6 +17,10 @@ LinearAllocator::LinearAllocator(char* begin, char* end)
 {
 }
 
+LinearAllocator::~LinearAllocator()
+{
+}
+
 void* LinearAllocator::allocate(unsigned int size)
 {
     assert(size <= (pEnd - current));

@@ -8,6 +8,7 @@ namespace util {
 class BaseArray
 {
 protected:
+    bool managed_memory{true};
     char* pBegin;
     char* pEnd;
 public:
