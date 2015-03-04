@@ -19,7 +19,6 @@ BaseArray::BaseArray(char* begin, char* end)
       pEnd(end)
 {
     assert(size()!=0);
-    std::memset(pBegin, 0, size());
 }
 
 BaseArray::~BaseArray()

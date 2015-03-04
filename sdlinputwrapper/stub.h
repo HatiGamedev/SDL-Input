@@ -2,7 +2,7 @@
 #define STUB_H
 
 #ifdef __llvm__
-#   define STUB(X) {static bool STUBBED=false; if(!STUBBED) { STUBBED=true; std::printf("STUB[%s:%d] %s:%s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, #X); }}
+#   define STUB(args...) {static bool STUBBED=false; if(!STUBBED) { STUBBED=true; std::printf("STUB[%s:%d] %s:", __FILE__, __LINE__, __PRETTY_FUNCTION__); std::printf("%s\n", #args); }}
 #elif __GNUC__
 #   define STUB(X) {static bool STUBBED=false; if(!STUBBED) { STUBBED=true; std::printf("STUB[%s:%d] %s:%s\n", __FILE__, __LINE__, __PRETTY_FUNCTION__, #X); }}
 #else

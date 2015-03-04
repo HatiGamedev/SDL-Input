@@ -33,6 +33,13 @@ public:
     }
 
     template<typename T>
+    void* allocateTyped(unsigned int Count)
+    {
+        return LinearAllocator::allocate(sizeof(T) * Count);
+    }
+
+
+    template<typename T>
     static /*constexpr*/ unsigned int BytesOfCount(unsigned int size)
     {
         return sizeof(T) * size;
